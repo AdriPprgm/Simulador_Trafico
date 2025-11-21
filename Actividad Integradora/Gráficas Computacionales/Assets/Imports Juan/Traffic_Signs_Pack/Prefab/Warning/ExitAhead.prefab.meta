@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5bf0150c616730f468a4e343490b1652
+timeCreated: 1477015620
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Warning/ExitAhead.prefab
+  uploadId: 147411

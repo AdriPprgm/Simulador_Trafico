@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0d28a31d1d6c0ea48949a4a8b4cc5ee6
+timeCreated: 1479073376
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Material/Regulation/StraightOnly.mat
+  uploadId: 147411

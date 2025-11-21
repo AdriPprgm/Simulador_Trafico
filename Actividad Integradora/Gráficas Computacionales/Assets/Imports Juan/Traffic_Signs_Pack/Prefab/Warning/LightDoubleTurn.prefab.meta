@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c12d49e354828814483643ee5928747e
+timeCreated: 1476668242
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Warning/LightDoubleTurn.prefab
+  uploadId: 147411

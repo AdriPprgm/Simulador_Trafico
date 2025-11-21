@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f9dfb7d7075f0984684c6f429961de6e
+timeCreated: 1479669860
+licenseType: Store
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/README.txt
+  uploadId: 147411

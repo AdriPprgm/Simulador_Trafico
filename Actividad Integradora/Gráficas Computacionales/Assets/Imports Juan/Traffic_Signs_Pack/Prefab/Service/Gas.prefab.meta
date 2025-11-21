@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b57eb6b548165c14cb675446424cbb92
+timeCreated: 1479665607
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Service/Gas.prefab
+  uploadId: 147411

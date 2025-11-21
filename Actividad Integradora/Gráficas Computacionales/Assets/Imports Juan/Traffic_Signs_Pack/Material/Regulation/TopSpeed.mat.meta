@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fbe4bbfd454a3724c8b2865dfb41cd64
+timeCreated: 1478482012
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Material/Regulation/TopSpeed.mat
+  uploadId: 147411

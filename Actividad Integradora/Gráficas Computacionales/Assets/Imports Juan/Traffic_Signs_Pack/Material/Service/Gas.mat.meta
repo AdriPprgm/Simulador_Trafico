@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d73212cc33b08ff41ac03bacb6195a3e
+timeCreated: 1479665565
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Material/Service/Gas.mat
+  uploadId: 147411

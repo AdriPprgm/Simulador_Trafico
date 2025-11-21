@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 04adf60ed7705d848b119f5ed15687af
+timeCreated: 1479071864
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Material/Regulation/DoNotEnter.mat
+  uploadId: 147411

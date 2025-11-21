@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: abf48e5aef493354c9ddbe2a81df46fa
+timeCreated: 1479668309
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Service/CampArea.prefab
+  uploadId: 147411

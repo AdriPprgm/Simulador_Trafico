@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5dc8d3b5d5d04c94c9f1a5b770864d8a
+timeCreated: 1479663704
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Service/Service_Blank.prefab
+  uploadId: 147411

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 862752e8eda6a8641b05f6101a221120
+timeCreated: 1476412793
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Warning/Turn.prefab
+  uploadId: 147411

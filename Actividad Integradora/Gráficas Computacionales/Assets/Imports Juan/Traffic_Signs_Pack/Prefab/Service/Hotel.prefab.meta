@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f17ae3c21011c3a40a53d0b62dd36725
+timeCreated: 1479667642
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Service/Hotel.prefab
+  uploadId: 147411

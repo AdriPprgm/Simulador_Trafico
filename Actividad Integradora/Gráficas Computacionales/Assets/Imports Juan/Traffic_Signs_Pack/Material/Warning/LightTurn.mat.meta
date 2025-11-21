@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e785c8b74b7c2da4ca672a53b2056b7d
+timeCreated: 1476413670
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Material/Warning/LightTurn.mat
+  uploadId: 147411

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2c8b6478fa68b8e4c9c82717cd9b203e
+timeCreated: 1476668402
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Material/Warning/Curves.mat
+  uploadId: 147411

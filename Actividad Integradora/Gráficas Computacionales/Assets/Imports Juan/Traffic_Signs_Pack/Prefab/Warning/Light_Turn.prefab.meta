@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4295238ceb351054eb842ce507baa628
+timeCreated: 1476413704
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Warning/Light_Turn.prefab
+  uploadId: 147411

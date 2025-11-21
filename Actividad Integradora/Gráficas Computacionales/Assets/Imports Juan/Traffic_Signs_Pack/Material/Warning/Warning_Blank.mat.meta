@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4c865c541bd070244b6ee178ca0d98db
+timeCreated: 1476412923
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Material/Warning/Warning_Blank.mat
+  uploadId: 147411

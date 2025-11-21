@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 53aae89c830569b4d8a8ae2dd58589ae
+timeCreated: 1479096583
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Regulation/MaxWidth.prefab
+  uploadId: 147411

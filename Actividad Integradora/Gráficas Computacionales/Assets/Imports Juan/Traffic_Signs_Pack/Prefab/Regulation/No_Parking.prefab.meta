@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2ed948bffd53a7d4c85e99eac6529621
+timeCreated: 1478481726
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Regulation/No_Parking.prefab
+  uploadId: 147411

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 6368c5e3a7d62d94f85ec25d3af026a2
+timeCreated: 1476668557
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Warning/Curves.prefab
+  uploadId: 147411

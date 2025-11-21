@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: dc99428038d45364d8d96c3de438b5f0
+timeCreated: 1476414136
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Warning/DoubleTurn.prefab
+  uploadId: 147411

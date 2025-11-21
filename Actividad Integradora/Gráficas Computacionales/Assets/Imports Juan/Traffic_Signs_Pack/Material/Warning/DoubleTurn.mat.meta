@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 8c59f5b78a471384c94856ec50c9243e
+timeCreated: 1476414063
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Material/Warning/DoubleTurn.mat
+  uploadId: 147411

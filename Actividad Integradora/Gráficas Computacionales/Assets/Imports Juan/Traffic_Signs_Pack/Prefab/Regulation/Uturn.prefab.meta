@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c985e30e80877424994175fc786fa09c
+timeCreated: 1478482489
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Regulation/Uturn.prefab
+  uploadId: 147411

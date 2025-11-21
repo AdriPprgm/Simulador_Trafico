@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 396eb479db340144c863651565cd5379
+timeCreated: 1476669086
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Material/Warning/TwoWay.mat
+  uploadId: 147411

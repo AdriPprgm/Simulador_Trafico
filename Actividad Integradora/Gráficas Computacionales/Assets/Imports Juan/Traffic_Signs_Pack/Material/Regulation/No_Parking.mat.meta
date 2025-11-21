@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a2e20083b98593e45a1686ea437fb003
+timeCreated: 1478481674
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Material/Regulation/No_Parking.mat
+  uploadId: 147411

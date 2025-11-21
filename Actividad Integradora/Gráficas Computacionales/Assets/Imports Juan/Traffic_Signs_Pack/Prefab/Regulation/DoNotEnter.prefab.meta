@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 3894f04ec91479d4fb54ecfcd1e6e340
+timeCreated: 1479071910
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Regulation/DoNotEnter.prefab
+  uploadId: 147411

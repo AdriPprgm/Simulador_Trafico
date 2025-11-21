@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 24e22e6a7a32db24b8a67bffbac3651d
+timeCreated: 1476326729
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Material/Warning/Turn.mat
+  uploadId: 147411

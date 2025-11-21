@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a9f647ffecf677745ad23c47db3286ac
+timeCreated: 1478482108
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Regulation/TopSpeed.prefab
+  uploadId: 147411

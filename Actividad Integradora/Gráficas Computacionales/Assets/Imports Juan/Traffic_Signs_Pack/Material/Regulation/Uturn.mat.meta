@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b3c9af004db44cf47b49cf7f208e3311
+timeCreated: 1478482462
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Material/Regulation/Uturn.mat
+  uploadId: 147411

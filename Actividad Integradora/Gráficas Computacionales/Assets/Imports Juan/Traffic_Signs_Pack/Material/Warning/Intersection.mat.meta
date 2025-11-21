@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f6213c0ff7060c14e9eaad402e5c6bfe
+timeCreated: 1476670187
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Material/Warning/Intersection.mat
+  uploadId: 147411

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c9cc3a45a5e7b4d4da4f98d9ec6ac36f
+timeCreated: 1479666406
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Service/Handicap.prefab
+  uploadId: 147411

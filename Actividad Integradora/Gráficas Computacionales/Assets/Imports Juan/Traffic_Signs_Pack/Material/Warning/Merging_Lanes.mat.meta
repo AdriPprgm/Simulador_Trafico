@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e8d6bf93b6fc7594ea88fd7052f8066b
+timeCreated: 1476670258
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Material/Warning/Merging_Lanes.mat
+  uploadId: 147411

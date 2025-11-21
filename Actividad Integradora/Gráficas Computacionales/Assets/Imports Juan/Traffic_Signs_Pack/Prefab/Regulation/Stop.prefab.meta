@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2e2842095b136e942aef449986ef6f83
+timeCreated: 1478135368
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Regulation/Stop.prefab
+  uploadId: 147411

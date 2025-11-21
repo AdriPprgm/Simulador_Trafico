@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 92b17b037015c7b45a4b7e0822e4f8d6
+timeCreated: 1479664381
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Service/Restaurant.prefab
+  uploadId: 147411

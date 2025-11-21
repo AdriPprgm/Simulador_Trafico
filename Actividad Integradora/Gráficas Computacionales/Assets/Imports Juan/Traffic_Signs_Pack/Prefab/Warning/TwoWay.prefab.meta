@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9bee9028c76a982488cbcfdff76093ba
+timeCreated: 1476669106
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Warning/TwoWay.prefab
+  uploadId: 147411

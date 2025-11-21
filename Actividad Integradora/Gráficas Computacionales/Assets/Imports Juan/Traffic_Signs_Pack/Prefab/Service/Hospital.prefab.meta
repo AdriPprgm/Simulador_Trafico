@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c67d7528e38b3734d9252068f5bf9edd
+timeCreated: 1479663946
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Service/Hospital.prefab
+  uploadId: 147411

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 6c42698eacb4225479ae9054bd3c8a98
+timeCreated: 1476670283
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Warning/Merging_Lanes.prefab
+  uploadId: 147411

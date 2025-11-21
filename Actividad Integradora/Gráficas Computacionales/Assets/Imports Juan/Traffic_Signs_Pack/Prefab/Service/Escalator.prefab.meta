@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 448c04dd859d3f04c8a679e2bf6432c3
+timeCreated: 1479668995
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Service/Escalator.prefab
+  uploadId: 147411

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: ff88f52534bb30041b5c7c9c65fca4b4
+timeCreated: 1476412949
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Warning/Warning_Blank.prefab
+  uploadId: 147411

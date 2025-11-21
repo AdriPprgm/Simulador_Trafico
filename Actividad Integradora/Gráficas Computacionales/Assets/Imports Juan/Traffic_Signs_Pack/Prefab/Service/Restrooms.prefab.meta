@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f50a6d58bd2f83447a0ad932323c527d
+timeCreated: 1479668651
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Prefab/Service/Restrooms.prefab
+  uploadId: 147411

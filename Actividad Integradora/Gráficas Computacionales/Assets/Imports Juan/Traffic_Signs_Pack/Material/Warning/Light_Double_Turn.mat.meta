@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 70b262a3d567fef48914fc54ca558f87
+timeCreated: 1476668144
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Material/Warning/Light_Double_Turn.mat
+  uploadId: 147411

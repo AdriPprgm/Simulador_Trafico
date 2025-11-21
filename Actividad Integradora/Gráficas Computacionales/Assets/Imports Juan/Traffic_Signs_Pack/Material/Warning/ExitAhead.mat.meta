@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: ee2928e55e4dbad4ca4b5f3f15a4d398
+timeCreated: 1477015583
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76531
+  packageName: Traffic signs Pack
+  packageVersion: 1.0
+  assetPath: Assets/Traffic_Signs_Pack/Material/Warning/ExitAhead.mat
+  uploadId: 147411

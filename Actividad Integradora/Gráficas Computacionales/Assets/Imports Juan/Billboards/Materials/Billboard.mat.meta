@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 72b0595f997ba2f43a0edf22ac39981e
+timeCreated: 1499454331
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 95723
+  packageName: Billboards
+  packageVersion: 1.0
+  assetPath: Assets/Billboards/Materials/Billboard.mat
+  uploadId: 190314
