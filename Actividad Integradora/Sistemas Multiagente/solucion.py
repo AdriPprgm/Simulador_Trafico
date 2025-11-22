@@ -337,6 +337,12 @@ if __name__ == "__main__":
                    square=True, linewidths=0.5, linecolor='gray',
                    cbar=False, ax=ax, annot=False)
         
+        # Dibujar camellones
+        ax.plot([10, 10], [2, 8], color='black', linewidth=3)
+        ax.plot([10, 10], [12, 22], color='black', linewidth=3)
+        ax.plot([2, 8], [10, 10], color='black', linewidth=3)
+        ax.plot([12, 22], [10, 10], color='black', linewidth=3)
+        
         active_cars = sum(1 for carro in carros if not carro.estacionado)
         ax.set_title(f'Traffic Simulation - Step {step_counter}\nActive Cars: {active_cars}/{len(carros)}', fontsize=14)
         ax.set_xlabel('X', fontsize=12)
