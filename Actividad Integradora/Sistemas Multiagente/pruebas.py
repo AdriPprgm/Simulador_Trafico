@@ -172,17 +172,17 @@ class Carro(CellAgent):
     def step(self):
         if not self.ruta:
             self.calcular_ruta()
-            print('BUCLE 2')
+            if not self.ruta:
+                self.destino = self.model.random.choice(self.model.estacionamientos_cells).coordinate
+                while self.destino == self.cell.coordinate:
+                    self.destino = self.model.random.choice(self.model.estacionamientos_cells).coordinate
         if not self.estacionado:
             if self.puede_avanzar():
                 self.avanzar()
-                print('BUCLE 3')
             else:
                 self.cambiar_carril()
-                print('BUCLE 4')
         if self.llego_destino():
             self.estacionarse()
-            print('BUCLE 5')
         if self.estacionado:
             self.remove()
 
@@ -192,10 +192,9 @@ class TrafficModel(mesa.Model):
     def __init__(self, n):
         super().__init__()
         self.num_cars = n
-        self.grid = OrthogonalVonNeumannGrid((24, 24), torus = False, capacity = 100)
+        self.grid = OrthogonalVonNeumannGrid((24, 24), torus = False, capacity = 100, random = self.random)
         self.estacionamientos_cells = []
 
-        # Create street agents for the grid
         for x in range(width):
             for y in range(height):
                 cell = self.grid[(x, y)]
@@ -254,7 +253,6 @@ class TrafficModel(mesa.Model):
                     calle.isEstacionamiento = True
                     self.estacionamientos_cells.append(self.grid[(x, y)])
     
-        # Create car agents
         agents = Carro.create_agents(
             self,
             self.num_cars,
@@ -262,22 +260,18 @@ class TrafficModel(mesa.Model):
 
         )
     def step(self):
-        # Execute one step for all agents
-        for agent in self.agents:
+        for agent in list(self.agents):
             agent.step()
 
-# Test example
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
     
     print("Testing Carro agents with visualization...")
     
-    # Create the model
     width = 24
     height = 24
-    model = TrafficModel(10)  # Create 10 cars
+    model = TrafficModel(10)
     
-    # Get all car agents
     carros = [agent for agent in model.agents if isinstance(agent, Carro)]
     
     print(f"Total cars: {len(carros)}")
@@ -286,14 +280,13 @@ if __name__ == "__main__":
     
     plt.ion()
     
-    # Create figure and axis once
     fig, ax = plt.subplots(figsize=(12, 12))
     
     def get_grid_state():
         """Create a grid showing car positions"""
         grid_state = np.zeros((height, width))
         
-        # Mark buildings (grey)
+        # Marcar buildings y estacionamientos
         for cell in model.grid.all_cells:
             calle_agents = [agent for agent in cell.agents if isinstance(agent, AgenteCalle)]
             if calle_agents and calle_agents[0].isBuilding:
@@ -301,9 +294,9 @@ if __name__ == "__main__":
                 grid_state[y, x] = 4  # Buildings
             if calle_agents and calle_agents[0].isEstacionamiento:
                 x, y = cell.coordinate
-                grid_state[y, x] = 8 
+                grid_state[y, x] = 8 # Estacionamientos
         
-        # Semaforos
+        #Marcar Semaforos
         for cell in model.grid.all_cells:
             semaforo_agent = [agent for agent in cell.agents if isinstance(agent, Semaforo1) or isinstance(agent, Semaforo2)]
             if semaforo_agent and semaforo_agent[0].avanza:
@@ -313,21 +306,20 @@ if __name__ == "__main__":
                 x, y = cell.coordinate
                 grid_state[y, x] = 3
         
-        # Mark destinations for all cars
+        # Marcar destino de todos los coches
         for carro in carros:
             if not carro.estacionado:
                 dest_x, dest_y = carro.destino
-                grid_state[dest_y, dest_x] = 6  # Destination
+                grid_state[dest_y, dest_x] = 6 
         
-        # Mark all car positions
+        # Marcar todas las posiciones de coches
         for carro in carros:
             if not carro.estacionado:
                 x, y = carro.cell.coordinate
-                grid_state[y, x] = 2  # Car position
+                grid_state[y, x] = 2 
         
         return grid_state
     
-    # Create custom colormap
     colors = ['white', 'lightblue', 'blue', 'red', 'grey', 'green', 'black', 'cyan', 'yellow']
     cmap = ListedColormap(colors)
     
@@ -337,27 +329,22 @@ if __name__ == "__main__":
         model.step()
         step_counter += 1
         
-        # Calculate grid state
         grid_state = get_grid_state()
         
-        # Clear previous plot
         ax.clear()
-        
-        # Draw updated heatmap
+
         sns.heatmap(grid_state, cmap=cmap, vmin=0, vmax=8,
                    square=True, linewidths=0.5, linecolor='gray',
                    cbar=False, ax=ax, annot=False)
         
-        # Count active cars
         active_cars = sum(1 for carro in carros if not carro.estacionado)
         ax.set_title(f'Traffic Simulation - Step {step_counter}\nActive Cars: {active_cars}/{len(carros)}', fontsize=14)
         ax.set_xlabel('X', fontsize=12)
         ax.set_ylabel('Y', fontsize=12)
         
-        if step_counter % 10 == 0:  # Print every 10 steps to reduce console clutter
+        if step_counter % 10 == 0:
             print(f"Step {step_counter}: {active_cars} cars still moving")
         
-        # Update display without blocking
         fig.canvas.draw()
         fig.canvas.flush_events()
         
@@ -366,6 +353,5 @@ if __name__ == "__main__":
     print(f"\nSimulation ended after {step_counter} steps!")
     print(f"All {len(carros)} cars reached their destinations!")
     
-    # Keep final plot open
     plt.ioff()
     plt.show()
