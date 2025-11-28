@@ -776,7 +776,7 @@ PrefabInstance:
     - target: {fileID: 8575042364786264673, guid: b61e434017d9ef44e82e0be9ed14e4fd, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 4d0c4f9e886b28e4281ef0446e13ed7e, type: 2}
+      objectReference: {fileID: 2100000, guid: 7592f810ed3e1e845b0617026da1f54a, type: 2}
     - target: {fileID: 8575042364788200609, guid: b61e434017d9ef44e82e0be9ed14e4fd, type: 3}
       propertyPath: m_Name
       value: Billboard_3
