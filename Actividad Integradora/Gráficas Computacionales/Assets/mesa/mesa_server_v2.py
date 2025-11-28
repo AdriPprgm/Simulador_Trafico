@@ -255,7 +255,7 @@ class TrafficModel(mesa.Model):
 connected_clients = set()
 width = 24
 height = 24
-model = TrafficModel(10)
+model = TrafficModel(25)
 
 def serialize_agents():
     """Serializa todos los agentes del modelo para enviar a Unity"""
@@ -304,7 +304,7 @@ async def simulation_loop():
     while True:
         model.step()
         await send_world_state()
-        await asyncio.sleep(0.1)  # Delay entre pasos (ajustable)
+        await asyncio.sleep(1)  # Delay entre pasos (ajustable)
 
 async def handler(ws):
     """Maneja las conexiones WebSocket"""

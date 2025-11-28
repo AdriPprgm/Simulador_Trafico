@@ -22,6 +22,9 @@ public class MesaSync : MonoBehaviour
     // Diccionario local para mantener referencia de los objetos instanciados
     private Dictionary<int, GameObject> unityAgents = new Dictionary<int, GameObject>();
 
+    // Diccionario para guardar la posición anterior de cada carro
+    private Dictionary<int, Vector3> previousPositions = new Dictionary<int, Vector3>();
+
     async void Start()
     {
         ws = new WebSocket(serverUrl);
@@ -88,7 +91,45 @@ public class MesaSync : MonoBehaviour
             }
 
             // Actualizamos la posición (Mesa usa Y, Unity usa Z para el plano)
-            Vector3 targetPosition = new Vector3(x, 0, y);
+            Vector3 targetPosition = new Vector3(x, 0, 23-y);
+
+            // Rotar el carro hacia la dirección del movimiento
+            if (agentType == "Carro")
+            {
+                if (previousPositions.ContainsKey(id))
+                {
+                    Vector3 direction = targetPosition - previousPositions[id];
+                    
+                    // Solo rotar si hay movimiento significativo
+                    if (direction.magnitude > 0.01f)
+                    {
+                        // Calcular el ángulo basado en la dirección
+                        float angle = 0f;
+                        
+                        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.z))
+                        {
+                            // Movimiento horizontal (Este u Oeste)
+                            angle = direction.x > 0 ? 90f : -90f;
+                        }
+                        else
+                        {
+                            // Movimiento vertical (Norte o Sur)
+                            angle = direction.z > 0 ? 0f : 180f;
+                        }
+                        
+                        unityAgents[id].transform.rotation = Quaternion.Euler(0, angle, 0);
+                    }
+                }
+                // else
+                // {
+                //     // Rotación inicial para carros nuevos
+                //     unityAgents[id].transform.rotation = Quaternion.Euler(0, 0, 0);
+                // }
+                
+                // Guardar la posición actual para el próximo frame
+                previousPositions[id] = targetPosition;
+            }
+
             unityAgents[id].transform.position = targetPosition;
 
             // Actualizar propiedades específicas del agente
