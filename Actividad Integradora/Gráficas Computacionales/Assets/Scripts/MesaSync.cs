@@ -6,15 +6,18 @@ using System.Text;
 
 public class MesaSync : MonoBehaviour
 {
-    // Dependencias:
-    // 1. NativeWebSocket (Instalar desde package manager o git)
-    // 2. Newtonsoft.Json (JSON.NET standard en Unity)
-
     WebSocket ws;
 
-    [Header("Configuraci�n de Conexi�n")]
+    [Header("Configuración de Conexión")]
     public string serverUrl = "ws://localhost:8765";
-    public GameObject agentPrefab; // Asigna tu cubo/esfera aqu�
+    
+    [Header("Prefabs por Tipo de Agente")]
+    public GameObject carroPrefab;
+    public GameObject semaforo1Prefab;
+    public GameObject semaforo2Prefab;
+    public GameObject callePrefab;
+    public GameObject buildingPrefab;
+    public GameObject estacionamientoPrefab;
 
     // Diccionario local para mantener referencia de los objetos instanciados
     private Dictionary<int, GameObject> unityAgents = new Dictionary<int, GameObject>();
@@ -23,21 +26,18 @@ public class MesaSync : MonoBehaviour
     {
         ws = new WebSocket(serverUrl);
 
-        ws.OnOpen += () => Debug.Log("Conexi�n establecida con Mesa.");
+        ws.OnOpen += () => Debug.Log("Conexión establecida con Mesa.");
         ws.OnError += (e) => Debug.LogError("Error en WebSocket: " + e);
-        ws.OnClose += (e) => Debug.Log("Conexi�n cerrada: " + e);
+        ws.OnClose += (e) => Debug.Log("Conexión cerrada: " + e);
 
         ws.OnMessage += (bytes) =>
         {
-            // 1. Recibimos mensaje crudo
             string message = Encoding.UTF8.GetString(bytes);
 
             try
             {
-                // 2. Parseamos el JSON
                 JObject json = JObject.Parse(message);
 
-                // 3. Verificamos el tipo de mensaje
                 if ((string)json["type"] == "update")
                 {
                     JArray agentsData = (JArray)json["agents"];
@@ -50,55 +50,154 @@ public class MesaSync : MonoBehaviour
             }
         };
 
-        // Conectar
         await ws.Connect();
     }
 
     void UpdateUnityScene(JArray mesaAgents)
     {
-        // Recorremos la lista de agentes que envi� Mesa
+        HashSet<int> activeAgents = new HashSet<int>();
+
         foreach (var agentData in mesaAgents)
         {
             int id = (int)agentData["id"];
-            // Nota: Mesa es Grid (X, Y). Unity es 3D (X, Z) generalmente.
             float x = (float)agentData["x"];
             float y = (float)agentData["y"];
+            string agentType = (string)agentData["type"];
+
+            activeAgents.Add(id);
 
             // Si el agente no existe en Unity, lo creamos
             if (!unityAgents.ContainsKey(id))
             {
-                if (agentPrefab != null)
+                GameObject prefab = GetPrefabForType(agentType, agentData);
+                
+                if (prefab != null)
                 {
-                    GameObject newAgent = Instantiate(agentPrefab);
-                    newAgent.name = $"Agent_{id}";
+                    GameObject newAgent = Instantiate(prefab);
+                    newAgent.name = $"{agentType}_{id}";
                     unityAgents[id] = newAgent;
+                    
+                    // Configurar propiedades específicas
+                    ConfigureAgent(newAgent, agentType, agentData);
                 }
                 else
                 {
-                    Debug.LogError("AgentPrefab no asignado en el Inspector.");
+                    Debug.LogWarning($"No hay prefab asignado para tipo: {agentType}");
                     continue;
                 }
             }
 
-            // Actualizamos la posici�n
-            // Mapeamos Y de Mesa a Z de Unity para movimiento en el plano suelo
+            // Actualizamos la posición (Mesa usa Y, Unity usa Z para el plano)
             Vector3 targetPosition = new Vector3(x, 0, y);
             unityAgents[id].transform.position = targetPosition;
+
+            // Actualizar propiedades específicas del agente
+            UpdateAgentProperties(unityAgents[id], agentType, agentData);
+        }
+
+        // Eliminar agentes que ya no existen en Mesa (carros estacionados)
+        List<int> toRemove = new List<int>();
+        foreach (var kvp in unityAgents)
+        {
+            if (!activeAgents.Contains(kvp.Key))
+            {
+                toRemove.Add(kvp.Key);
+            }
+        }
+
+        foreach (int id in toRemove)
+        {
+            Destroy(unityAgents[id]);
+            unityAgents.Remove(id);
+            Debug.Log($"Agente {id} removido (estacionado)");
         }
     }
 
-    // M�todo para enviar datos A Mesa (si mueves un agente en Unity)
-    public async void SendUpdateToMesa(int id, int x, int y)
+    GameObject GetPrefabForType(string agentType, JToken agentData)
+    {
+        switch (agentType)
+        {
+            case "Carro":
+                return carroPrefab;
+            case "Semaforo1":
+                return semaforo1Prefab;
+            case "Semaforo2":
+                return semaforo2Prefab;
+            case "AgenteCalle":
+                // Diferenciar entre calle, building y estacionamiento
+                bool isBuilding = agentData["isBuilding"] != null ? (bool)agentData["isBuilding"] : false;
+                bool isEstacionamiento = agentData["isEstacionamiento"] != null ? (bool)agentData["isEstacionamiento"] : false;
+                
+                if (isBuilding)
+                    return buildingPrefab;
+                else if (isEstacionamiento)
+                    return estacionamientoPrefab;
+                else
+                    return callePrefab;
+            default:
+                return null;
+        }
+    }
+
+    void ConfigureAgent(GameObject agent, string agentType, JToken agentData)
+    {
+        // Configuración inicial específica por tipo
+        switch (agentType)
+        {
+            case "Carro":
+                // Añadir componente de movimiento suave si lo deseas
+                agent.tag = "Car";
+                break;
+            case "Semaforo1":
+            case "Semaforo2":
+                agent.tag = "TrafficLight";
+                break;
+            case "AgenteCalle":
+                agent.tag = "Road";
+                bool isBuilding = agentData["isBuilding"] != null ? (bool)agentData["isBuilding"] : false;
+                if (isBuilding)
+                    agent.tag = "Building";
+                break;
+        }
+    }
+
+    void UpdateAgentProperties(GameObject agent, string agentType, JToken agentData)
+    {
+        // Actualizar propiedades dinámicas
+        switch (agentType)
+        {
+            case "Carro":
+                bool estacionado = agentData["estacionado"] != null ? (bool)agentData["estacionado"] : false;
+                // Cambiar color o material si está estacionado
+                if (estacionado)
+                {
+                    var renderer = agent.GetComponent<Renderer>();
+                    if (renderer != null)
+                        renderer.material.color = Color.gray;
+                }
+                break;
+
+            case "Semaforo1":
+            case "Semaforo2":
+                bool avanza = agentData["avanza"] != null ? (bool)agentData["avanza"] : false;
+                // Cambiar color del semáforo
+                var lightRenderer = agent.GetComponent<Renderer>();
+                if (lightRenderer != null)
+                {
+                    lightRenderer.material.color = avanza ? Color.green : Color.red;
+                }
+                break;
+        }
+    }
+
+    // Método para enviar comandos a Mesa
+    public async void SendCommandToMesa(string command)
     {
         if (ws.State == WebSocketState.Open)
         {
             JObject payload = new JObject
             {
-                ["type"] = "update",
-                ["agents"] = new JArray
-                {
-                    new JObject { ["id"] = id, ["x"] = x, ["y"] = y }
-                }
+                ["type"] = command
             };
 
             await ws.SendText(payload.ToString());
@@ -107,9 +206,8 @@ public class MesaSync : MonoBehaviour
 
     void Update()
     {
-        // Necesario para procesar los mensajes en el hilo principal de Unity
 #if !UNITY_WEBGL || UNITY_EDITOR
-        ws.DispatchMessageQueue();
+        ws?.DispatchMessageQueue();
 #endif
     }
 

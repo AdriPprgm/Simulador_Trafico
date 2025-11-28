@@ -3,26 +3,20 @@ using UnityEngine;
 public class TestMovement : MonoBehaviour
 {
     public MesaSync mesaSync;
-    public int myAgentID = 1; // Simularemos ser el agente 1
+    
+    [Header("Configuración de Simulación")]
+    public bool autoStart = true;
 
-    // Posici�n grid
-    int x = 0;
-    int y = 0;
-
-    void Update()
+    void Start()
     {
-        bool moved = false;
-
-        if (Input.GetKeyDown(KeyCode.UpArrow)) { y++; moved = true; }
-        if (Input.GetKeyDown(KeyCode.DownArrow)) { y--; moved = true; }
-        if (Input.GetKeyDown(KeyCode.RightArrow)) { x++; moved = true; }
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) { x--; moved = true; }
-
-        if (moved)
+        if (autoStart && mesaSync != null)
         {
-            // Enviamos la nueva intenci�n de posici�n a Mesa
-            Debug.Log($"Enviando movimiento a Mesa: {x}, {y}");
-            mesaSync.SendUpdateToMesa(myAgentID, x, y);
+            Debug.Log("Simulación iniciada automáticamente");
+            mesaSync.SendCommandToMesa("resume");
+        }
+        else if (mesaSync == null)
+        {
+            Debug.LogError("MesaSync no está asignado en TestMovement");
         }
     }
 }
