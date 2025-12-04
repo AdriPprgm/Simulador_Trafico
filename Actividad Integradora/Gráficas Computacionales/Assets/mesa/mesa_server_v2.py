@@ -1,22 +1,10 @@
 # type: ignore
-import numpy as np
-
-import pandas as pd
-
-import seaborn as sns
-
 import mesa
-
 from mesa.discrete_space import CellAgent, OrthogonalVonNeumannGrid
-
-import random
-
-import time
-
-from matplotlib.colors import ListedColormap
-
 from collections import deque
-
+import asyncio
+import websockets
+import json
 import diccionario_movimientos
 
 #type: ignore
