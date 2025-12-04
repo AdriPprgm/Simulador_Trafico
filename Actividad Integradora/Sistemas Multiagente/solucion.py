@@ -174,7 +174,10 @@ class Carro(CellAgent):
         return self.cell.coordinate == self.destino
 
     def estacionarse(self):
-        self.estacionado = True
+        if not self.estacionado:
+            self.estacionado = True
+        else:
+            pass
 
     def step(self):
         if not self.ruta:
@@ -191,7 +194,7 @@ class Carro(CellAgent):
         if self.llego_destino():
             self.estacionarse()
         if self.estacionado:
-            self.remove()
+            pass
 
 # Modelo
 
@@ -278,7 +281,7 @@ if __name__ == "__main__":
     
     width = 24
     height = 24
-    model = TrafficModel(500)
+    model = TrafficModel(50)
     
     carros = [agent for agent in model.agents if isinstance(agent, Carro)]
     
