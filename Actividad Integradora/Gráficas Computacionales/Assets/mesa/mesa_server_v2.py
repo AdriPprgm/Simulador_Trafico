@@ -264,7 +264,19 @@ class TrafficModel(mesa.Model):
                     (x == 31 and y == 24) or  # Estacionamiento 7
                     (x == 33 and y == 28) or  # Estacionamiento 11
                     (x == 30 and y == 31) or  # Estacionamiento 6
-                    (x == 32 and y == 33)):  # Estacionamiento 9
+                    (x == 32 and y == 33) or  # Estacionamiento 9
+                    
+                    #Nuevos estacionemientos
+                    (x == 10 and y == 3) or   
+                    (x == 3 and y == 3) or   
+                    (x == 46 and y == 3) or   
+                    (x == 3 and y == 16) or   
+                    (x == 3 and y == 20) or   
+                    (x == 7 and y == 44) or   
+                    (x == 37 and y == 39) or  
+                    (x == 45 and y == 19) or  
+                    (x == 36 and y == 3)):  
+                    
                     calle.isEstacionamiento = True
                     self.estacionamientos_cells.append(self.grid[(x, y)])
 

@@ -57,7 +57,7 @@ movimientos_posibles = {
     -10: {
         -11: [(-10, -10), (-11, -11)],  # Abajo e izquierda
         -10: [(-10, -9)],  # Solo abajo
-        -9: [(-10, -8), (-11, -9)],  # Abajo e izquierda
+        -9: [(-10, -8), (-11, -9), (-9, -9)],  # Abajo, izquierda y derecha
         -8: [(-10, -7), (-11, -8)],  # Abajo e izquierda
         -7: [(-10, -6), (-11, -7)],  # Abajo e izquierda
         -6: [(-10, -5), (-11, -6)],  # Abajo e izquierda
@@ -70,11 +70,11 @@ movimientos_posibles = {
         1: [(-10, 2), (-11, 1)],  # Abajo e izquierda
         2: [(-10, 3), (-11, 2)],  # Abajo e izquierda
         3: [(-10, 4), (-11, 3)],  # Abajo e izquierda
-        4: [(-10, 5), (-11, 4)],  # Abajo e izquierda
+        4: [(-10, 5), (-11, 4), (-9, 4)],  # Abajo, izquierda y derecha
         5: [(-10, 6), (-11, 5)],  # Abajo e izquierda
         6: [(-10, 7), (-11, 6)],  # Abajo e izquierda
         7: [(-10, 8), (-11, 7)],  # Abajo e izquierda
-        8: [(-10, 9), (-11, 8)],  # Abajo e izquierda
+        8: [(-10, 9), (-11, 8), (-9, 8)],  # Abajo e izquierda
         9: [(-10, 10), (-11, 9)],  # Abajo e izquierda
         10: [(-10, 11), (-11, 10)],  # Abajo e izquierda
         11: [(-10, 12), (-11, 11), (-9, 11)],  # Abajo, izquierda y derecha
@@ -107,8 +107,11 @@ movimientos_posibles = {
     -9: {
         -11: [(-10, -11), (-9, -10)],  # Izquierda y abajo
         -10: [(-10, -10), (-9, -11)],  # Izquierda y arriba
+        -9: [(-9, -10)],  # Estacionamiento sale hacia arriba
         2: [(-10, 2), (-9, 3)],  # Izquierda y abajo
         3: [(-10, 3), (-9, 2)],  # Izquierda y arriba
+        4: [(-9, 3)],
+        8: [(-9, 9)],
         9: [(-10, 9), (-9, 10)],  # Izquierda y abajo
         10: [(-10, 10), (-9, 9)],  # Izquierda y arriba
         11: [(-8, 11), (-9, 12)],  # Derecha y abajo
@@ -190,7 +193,7 @@ movimientos_posibles = {
         29: [(-7, 29), (-6, 28)],  # Arriba e izquierda
         30: [(-7, 30), (-6, 29)],  # Arriba e izquierda
         31: [(-7, 31), (-6, 30)],  # Arriba e izquierda
-        32: [(-7, 32), (-6, 31)],  # Arriba e izquierda
+        32: [(-7, 32), (-6, 31), (-5, 32)],  # Arriba e izquierda
         33: [(-7, 33), (-6, 32)],  # Arriba e izquierda
         34: [(-7, 34), (-6, 33)],  # Arriba e izquierda
         35: [(-5, 35), (-6, 36), (-6, 34)],  # Derecha, abajo y arriba
@@ -207,6 +210,7 @@ movimientos_posibles = {
         12: [(-4, 12), (-5, 11)],  # Derecha y arriba
         30: [(-6, 30), (-5, 31)],  # Izquierda y abajo
         31: [(-6, 31), (-5, 30)],  # Izquierda y arriba
+        32: [(-5, 31)],
         35: [(-4, 35), (-5, 36)],  # Derecha y abajo
         36: [(-4, 36), (-5, 35)]  # Derecha y arriba
     },
@@ -238,7 +242,7 @@ movimientos_posibles = {
     -3: {
         -11: [(-4, -11), (-3, -10)],  # Abajo e izquierda
         -10: [(-4, -10), (-3, -11), (-3, -9)],  # Arriba, abajo e izquierda
-        -9: [(-4, -9), (-3, -8)],  # Abajo e izquierda
+        -9: [(-4, -9), (-3, -8), (-2, -9)],  # Abajo, izquierda y derecha
         -8: [(-4, -8), (-3, -7)],  # Abajo e izquierda
         -7: [(-4, -7), (-3, -6)],  # Abajo e izquierda
         -6: [(-4, -6), (-3, -5)],  # Abajo e izquierda
@@ -263,6 +267,7 @@ movimientos_posibles = {
     -2: {
         -11: [(-3, -11), (-2, -10)],  # Abajo e izquierda
         -10: [(-3, -10), (-2, -11)],  # Arriba e izquierda
+        -9: [(-2, -10)], # Estacionamiento sale hacia arriba
         -2: [(-1, -2)],  # Solo derecha
         -1: [(-1, -1), (-2, -2)],  # Arriba y derecha
         0: [(-1, 0), (-2, -1)],  # Arriba y derecha
@@ -1033,6 +1038,7 @@ movimientos_posibles = {
     24: {
         -11: [(23, -11), (24, -12)],  # Abajo e izquierda
         -10: [(23, -10), (24, -11)],  # Arriba e izquierda
+        -9: [(24, -10)],
         -6: [(23, -6), (24, -7)],  # Abajo e izquierda
         -5: [(23, -5), (24, -6)],  # Arriba e izquierda
         -2: [(25, -2), (24, -3)],  # Abajo y derecha
@@ -1069,7 +1075,7 @@ movimientos_posibles = {
     25: {
         -11: [(24, -11), (25, -12)],  # Abajo e izquierda
         -10: [(24, -10), (25, -11), (25, -9)],  # Arriba, abajo e izquierda
-        -9: [(26, -9), (25, -10)],  # Abajo y derecha
+        -9: [(26, -9), (25, -10), (24, -9)],  # Abajo y derecha
         -8: [(26, -8), (25, -9)],  # Abajo y derecha
         -7: [(26, -7), (25, -8)],  # Abajo y derecha
         -6: [(24, -6), (26, -6), (25, -7)],  # Izquierda, derecha y abajo
@@ -1082,6 +1088,7 @@ movimientos_posibles = {
         10: [(24, 10), (25, 9)],  # Arriba e izquierda
         11: [(26, 11), (25, 10)],  # Abajo y derecha
         12: [(26, 12), (25, 11)],  # Arriba y derecha
+        27: [(26, 27)],
         30: [(24, 30), (25, 29)],  # Abajo e izquierda
         31: [(24, 31), (25, 30)],  # Arriba e izquierda
         35: [(26, 35), (25, 34)],  # Abajo y derecha
@@ -1117,7 +1124,7 @@ movimientos_posibles = {
         24: [(27, 24), (26, 23)],  # Abajo y derecha
         25: [(27, 25), (26, 24)],  # Abajo y derecha
         26: [(27, 26), (26, 25)],  # Abajo y derecha
-        27: [(27, 27), (26, 26)],  # Abajo y derecha
+        27: [(27, 27), (26, 26), (25, 27)],  # Abajo y derecha
         28: [(27, 28), (26, 27)],  # Abajo y derecha
         29: [(27, 29), (26, 28)],  # Abajo y derecha
         30: [(25, 30), (27, 30), (26, 29)],  # Abajo, izquierda y derecha
@@ -1231,7 +1238,7 @@ movimientos_posibles = {
         4: [(31, 4), (32, 3)],  # Abajo e izquierda
         5: [(31, 5), (32, 4)],  # Abajo e izquierda
         6: [(31, 6), (32, 5)],  # Abajo e izquierda
-        7: [(31, 7), (32, 6)],  # Abajo e izquierda
+        7: [(31, 7), (32, 6), (33, 7)],  # Abajo e izquierda
         8: [(31, 8), (32, 7)],  # Abajo e izquierda
         9: [(31, 9), (32, 8)],  # Abajo e izquierda
         10: [(31, 10), (32, 9)],  # Arriba e izquierda
@@ -1245,6 +1252,7 @@ movimientos_posibles = {
         -10: [(32, -10), (33, -11)],  # Arriba e izquierda
         -2: [(34, -2), (33, -3)],  # Abajo y derecha
         -1: [(34, -1), (33, -2)],  # Arriba y derecha
+        7: [(32,7)],
         9: [(32, 9), (33, 8)],  # Abajo e izquierda
         10: [(32, 10), (33, 9)],  # Arriba e izquierda
         11: [(34, 11), (33, 10)],  # Abajo y derecha
@@ -1255,6 +1263,7 @@ movimientos_posibles = {
     34: {
         -11: [(33, -11), (34, -12)],  # Abajo e izquierda
         -10: [(33, -10), (34, -11)],  # Arriba e izquierda
+        -9: [(34, -10)], # Estacionamiento sale hacia arriba
         -2: [(35, -2), (34, -3)],  # Abajo y derecha
         -1: [(35, -1), (34, -2)],  # Arriba y derecha
         9: [(33, 9), (34, 8)],  # Abajo e izquierda
