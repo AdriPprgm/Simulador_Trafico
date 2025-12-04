@@ -18,6 +18,7 @@ public class MesaSync : MonoBehaviour
     public GameObject callePrefab;
     public GameObject buildingPrefab;
     public GameObject estacionamientoPrefab;
+    public GameObject camionPrefab;
 
     // Diccionario local para mantener referencia de los objetos instanciados
     private Dictionary<int, GameObject> unityAgents = new Dictionary<int, GameObject>();
@@ -107,7 +108,7 @@ public class MesaSync : MonoBehaviour
             Vector3 targetPosition = new Vector3(x, 0, 23-y);
 
             // Rotar el carro hacia la dirección del movimiento
-            if (agentType == "Carro")
+            if (agentType == "Carro" || agentType == "Camion")
             {
                 if (previousPositions.ContainsKey(id))
                 {
@@ -170,7 +171,7 @@ public class MesaSync : MonoBehaviour
                 {
                     return carroPrefabs[carPrefabIndices[id]];
                 }
-                
+
                 // Si es nuevo, asignar un prefab aleatorio
                 if (carroPrefabs != null && carroPrefabs.Length > 0)
                 {
@@ -178,7 +179,7 @@ public class MesaSync : MonoBehaviour
                     carPrefabIndices[id] = randomIndex;
                     return carroPrefabs[randomIndex];
                 }
-                
+
                 Debug.LogWarning("No hay prefabs de carro asignados en el array");
                 return null;
 
@@ -186,6 +187,8 @@ public class MesaSync : MonoBehaviour
                 return semaforo1Prefab;
             case "Semaforo2":
                 return semaforo2Prefab;
+            case "Camion":
+                return camionPrefab;
             case "AgenteCalle":
                 // Diferenciar entre calle, building y estacionamiento
                 bool isBuilding = agentData["isBuilding"] != null ? (bool)agentData["isBuilding"] : false;
@@ -221,6 +224,9 @@ public class MesaSync : MonoBehaviour
                 if (isBuilding)
                     agent.tag = "Building";
                 break;
+            case "Camion":
+                agent.tag = "Camion";
+                break;
         }
     }
 
@@ -248,6 +254,9 @@ public class MesaSync : MonoBehaviour
                 if (sem != null)
                     sem.UpdateSemaforo(avanza);
 
+                break;
+            case "Camion":
+                bool camionEstacionado = agentData["estacionado"] != null ? (bool)agentData["estacionado"] : false;
                 break;
         }
     }

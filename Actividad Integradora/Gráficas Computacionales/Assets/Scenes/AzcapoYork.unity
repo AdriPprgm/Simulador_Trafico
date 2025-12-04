@@ -47299,6 +47299,7 @@ MonoBehaviour:
   callePrefab: {fileID: 6626219455187341395}
   buildingPrefab: {fileID: 5564718834835214129, guid: b174d6daa75bc9a48ac87df246a0b642, type: 3}
   estacionamientoPrefab: {fileID: 6439528465148564463}
+  camionPrefab: {fileID: 6352616002136992155, guid: b2788c42126f14248ab2fdd78705c4d0, type: 3}
 --- !u!4 &1042218804
 Transform:
   m_ObjectHideFlags: 0
