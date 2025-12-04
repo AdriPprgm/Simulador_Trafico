@@ -82,31 +82,45 @@ class Semaforo1(CellAgent):
         self.cell = cell
         self.avanza = False
         self.contador = 0
+        self.tiempo_verde = 4
+        self.tiempo_rojo = 8
 
-    def cambair_estado(self):
+    def cambiar_estado(self):
         self.avanza = not self.avanza
 
     def step(self):
         self.contador += 1
-        if self.contador >= 5:
-            self.cambair_estado()
-            self.contador = 0
+        if self.avanza:
+            if self.contador >= self.tiempo_verde:
+                self.cambiar_estado()
+                self.contador = 0
+        else:
+            if self.contador >= self.tiempo_rojo:
+                self.cambiar_estado()
+                self.contador = 0
 
 class Semaforo2(CellAgent):
     def __init__(self, model, cell):     
         super().__init__(model)
         self.cell = cell
         self.avanza = True
-        self.contador = 0
+        self.contador = -2
+        self.tiempo_verde = 4
+        self.tiempo_rojo = 8
 
-    def cambair_estado(self):
+    def cambiar_estado(self):
         self.avanza = not self.avanza
 
     def step(self):
         self.contador += 1
-        if self.contador >= 5:
-            self.cambair_estado()
-            self.contador = 0
+        if self.avanza:
+            if self.contador >= self.tiempo_verde:
+                self.cambiar_estado()
+                self.contador = 0
+        else:
+            if self.contador >= self.tiempo_rojo:
+                self.cambiar_estado()
+                self.contador = 0
 
 # Agente "Camion"
 
