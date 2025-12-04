@@ -217,12 +217,11 @@ public class MesaSync : MonoBehaviour
             case "Semaforo1":
             case "Semaforo2":
                 bool avanza = agentData["avanza"] != null ? (bool)agentData["avanza"] : false;
-                // Cambiar color del semáforo
-                var lightRenderer = agent.GetComponent<Renderer>();
-                if (lightRenderer != null)
-                {
-                    lightRenderer.material.color = avanza ? Color.green : Color.red;
-                }
+
+                SemaforoSync sem = agent.GetComponent<SemaforoSync>();
+                if (sem != null)
+                    sem.UpdateSemaforo(avanza);
+
                 break;
         }
     }

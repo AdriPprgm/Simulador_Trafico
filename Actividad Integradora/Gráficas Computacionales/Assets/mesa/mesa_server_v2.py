@@ -255,7 +255,7 @@ class TrafficModel(mesa.Model):
 connected_clients = set()
 width = 24
 height = 24
-model = TrafficModel(25)
+model = TrafficModel(500)
 
 def serialize_agents():
     """Serializa todos los agentes del modelo para enviar a Unity"""
