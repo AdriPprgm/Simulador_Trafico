@@ -31,26 +31,26 @@ def breadth_first_search(start: tuple, goal: tuple, grid: OrthogonalVonNeumannGr
             return path[::-1]
 
         cell = grid[current].coordinate
-        
+
         # Validar que cell esté dentro del rango del diccionario
         dict_x = cell[0] + 1
         dict_y = cell[1] + 1
-        
+
         if dict_x not in diccionario_movimientos.adjusted_movement_map:
             continue
         if dict_y not in diccionario_movimientos.adjusted_movement_map[dict_x]:
             continue
-            
+
         neighbors = diccionario_movimientos.adjusted_movement_map[dict_x][dict_y]
 
         for i in neighbors:
             cell_pos = (i[0] - 1, i[1] - 1)
-            
+
             # Validar que cell_pos esté dentro del grid (0-47)
-            if (cell_pos[0] < 0 or cell_pos[0] >= 48 or 
+            if (cell_pos[0] < 0 or cell_pos[0] >= 48 or
                 cell_pos[1] < 0 or cell_pos[1] >= 48):
                 continue
-            
+
             if cell_pos not in visited:
                 neighbor_cell = grid[cell_pos]
                 has_car = any(isinstance(agent, Carro) for agent in neighbor_cell.agents)
