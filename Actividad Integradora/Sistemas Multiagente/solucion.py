@@ -108,6 +108,8 @@ class Semaforo2(CellAgent):
             self.cambair_estado()
             self.contador = 0
 
+# Agente "Camion"
+
 # Agente "Carro"
 
 class Carro(CellAgent):
@@ -209,7 +211,8 @@ class TrafficModel(mesa.Model):
                 if (x == 21 and (y == 4 or y == 5 or y == 10 or y == 11) or
                     x == 2 and (y == 4 or y == 5 or y == 8 or y == 9) or
                     x == 7 and (y == 22 or y == 23) or
-                    x == 15 and (y == 22 or y == 23)):
+                    x == 15 and (y == 22 or y == 23) or
+                    x == 12 and (y == 0 or y == 1)):
                     semaforo1 = Semaforo1(self, cell)
 
                 #Set Semaforos2
@@ -275,7 +278,7 @@ if __name__ == "__main__":
     
     width = 24
     height = 24
-    model = TrafficModel(50)
+    model = TrafficModel(500)
     
     carros = [agent for agent in model.agents if isinstance(agent, Carro)]
     
