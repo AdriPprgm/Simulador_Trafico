@@ -318,8 +318,8 @@ movimientos_posibles = {
         -1: [(1, -1), (0, -2)],  # Arriba y derecha
         9: [(-1, 9), (0, 10)],  # Abajo e izquierda
         10: [(-1, 10), (0, 9)],  # Arriba e izquierda
-        11: [(1, 11), (0, 12)],  # Abajo y derecha
-        12: [(1, 12), (0, 11)],  # Arriba y derecha
+        11: [(1, 11)],  # Abajo y derecha
+        12: [(1, 12)],  # Arriba y derecha
         30: [(-1, 30), (0, 31)],  # Abajo e izquierda
         31: [(-1, 31), (0, 30)],  # Arriba e izquierda
         35: [(1, 35), (0, 36)],  # Abajo y derecha
@@ -560,7 +560,7 @@ movimientos_posibles = {
         -3: [(10, -3), (9, -2)],  # Derecha y abajo
         -2: [(10, -2), (9, -1)],  # Derecha y abajo
         -1: [(10, -1), (9, 0)],  # Derecha y abajo
-        0: [(10, 0), (9, 1)],  # Derecha y abajo
+        0: [(9, 1)],  # Derecha y abajo
         1: [(9, 2), (8, 1)],
         2: [(9, 1), (9, 3), (8, 2)],
         3: [(9, 4), (10, 3)],
@@ -610,7 +610,7 @@ movimientos_posibles = {
         -3: [(9, -3), (10, -2)],  # Abajo e izquierda
         -2: [(9, -2), (10, -1)],  # Abajo e izquierda
         -1: [(9, -1), (10, 0)],  # Abajo e izquierda
-        0: [(9, 0), (10, 1)],  # Abajo e izquierda
+        0: [(10, 1)],  # Abajo e izquierda
         1: [(10, 2), (9, 1)],
         2: [(10, 1), (10, 3), (9, 2)],
         3: [(10, 4), (9, 3)],
@@ -681,7 +681,7 @@ movimientos_posibles = {
         22: [(11, 21), (12, 22)],
         23: [(11, 22), (11, 24), (12, 23)],
         24: [(11, 23), (12, 24)],
-        25: [(12, 25), (11, 24)],  # Arriba y derecha
+        25: [(11, 24)],  # Arriba y derecha
         26: [(12, 26), (11, 25)],  # Arriba y derecha
         27: [(12, 27), (11, 26)],  # Arriba y derecha
         28: [(12, 28), (11, 27)],  # Arriba y derecha
@@ -731,7 +731,7 @@ movimientos_posibles = {
         22: [(12, 21), (11, 22)],
         23: [(12, 24), (13, 23)],
         24: [(12, 23), (13, 24)],
-        25: [(11, 25), (12, 24)],  # Arriba e izquierda
+        25: [(12, 24)],  # Arriba e izquierda
         26: [(11, 26), (12, 25)],  # Arriba e izquierda
         27: [(11, 27), (12, 26)],  # Arriba e izquierda
         28: [(11, 28), (12, 27)],  # Arriba e izquierda
@@ -1088,8 +1088,8 @@ movimientos_posibles = {
         -3: [(26, -3), (25, -4)],  # Abajo y derecha
         -2: [(26, -2), (25, -3)],  # Abajo y derecha
         -1: [(26, -1), (25, -2)],  # Arriba y derecha
-        9: [(24, 9), (25, 8)],  # Abajo e izquierda
-        10: [(24, 10), (25, 9)],  # Arriba e izquierda
+        9: [(24, 9)],  # Abajo e izquierda
+        10: [(24, 10)],  # Arriba e izquierda
         11: [(26, 11), (25, 10)],  # Abajo y derecha
         12: [(26, 12), (25, 11)],  # Arriba y derecha
         27: [(26, 27)],
