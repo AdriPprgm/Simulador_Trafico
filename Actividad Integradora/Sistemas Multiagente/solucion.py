@@ -325,6 +325,11 @@ class TrafficModel(mesa.Model):
         self.paradas_camion_cells = [self.grid[(25, 34)],
                                      self.grid[(34, 25)],
                                      self.grid[(25, 13)],
+                                     self.grid[(1, 35)],
+                                     self.grid[(30, 46)],
+                                     self.grid[(30, 1)],
+                                     self.grid[(30, 10)],
+                                     self.grid[(11, 41)],
                                      self.grid[(13, 26)]]
 
         for x in range(width):
@@ -333,7 +338,9 @@ class TrafficModel(mesa.Model):
                 calle = AgenteCalle(self, cell)
 
                 #Set Semaforos1 (sumamos +12 a todas las coordenadas)
-                if (x == 33 and (y == 16 or y == 17 or y == 22 or y == 23) or
+                if (x == 11 and (y == 22 or y == 23) or
+                    x == 36 and (y == 20 or y == 21) or
+                    x == 33 and (y == 16 or y == 17 or y == 22 or y == 23) or
                     x == 14 and (y == 16 or y == 17 or y == 20 or y == 21) or
                     x == 19 and (y == 34 or y == 35) or
                     x == 27 and (y == 34 or y == 35) or
@@ -341,12 +348,14 @@ class TrafficModel(mesa.Model):
                     semaforo1 = Semaforo1(self, cell)
 
                 #Set Semaforos2 (sumamos +12 a todas las coordenadas)
-                if (y == 15 and (x == 12 or x == 13) or
+                if (y == 11 and (x == 20 or x == 21) or
+                    y == 15 and (x == 12 or x == 13) or
                     y == 19 and (x == 12 or x == 13) or
                     y == 14 and (x == 22 or x == 23) or
                     y == 18 and (x == 34 or x == 35) or
                     y == 24 and (x == 34 or x == 35) or
-                    y == 33 and (x == 20 or x == 21 or x == 28 or x == 29)):
+                    y == 33 and (x == 20 or x == 21 or x == 28 or x == 29) or
+                    y == 36 and (x == 22 or x == 23)):
                     semaforo2 = Semaforo2(self, cell)
 
                 #Set Buildings
@@ -402,7 +411,7 @@ class TrafficModel(mesa.Model):
         )
         camiones = Camion.create_agents(
             self,
-            3
+            5
         )
     def step(self):
         for agent in list(self.agents):
@@ -508,7 +517,6 @@ if __name__ == "__main__":
         fig.canvas.draw()
         fig.canvas.flush_events()
         
-        time.sleep(0.1)
     
     print(f"\nSimulation ended after {step_counter} steps!")
     print(f"All {len(carros)} cars reached their destinations!")
