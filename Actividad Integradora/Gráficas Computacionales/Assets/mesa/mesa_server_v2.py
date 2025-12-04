@@ -29,26 +29,26 @@ def breadth_first_search(start: tuple, goal: tuple, grid: OrthogonalVonNeumannGr
             path.append(start)
             path.pop(-1)
             return path[::-1]
-        
+
         cell = grid[current].coordinate
         dict_x = cell[0] + 1
         dict_y = cell[1] + 1
-        
+
         if dict_x not in diccionario_movimientos.adjusted_movement_map:
             continue
         if dict_y not in diccionario_movimientos.adjusted_movement_map[dict_x]:
             continue
-            
+
         neighbors = diccionario_movimientos.adjusted_movement_map[dict_x][dict_y]
 
         for i in neighbors:
             cell_pos = (i[0] - 1, i[1] - 1)
-            
+
             # Validar que cell_pos esté dentro del grid (0-47)
-            if (cell_pos[0] < 0 or cell_pos[0] >= 48 or 
+            if (cell_pos[0] < 0 or cell_pos[0] >= 48 or
                 cell_pos[1] < 0 or cell_pos[1] >= 48):
                 continue
-            
+
             if cell_pos not in visited:
                 neighbor_cell = grid[cell_pos]
                 has_truck = any(isinstance(agent, Camion) for agent in neighbor_cell.agents)
@@ -75,7 +75,7 @@ class AgenteCalle(CellAgent):
 # Agente "Semaforo"
 
 class Semaforo1(CellAgent):
-    def __init__(self, model, cell):     
+    def __init__(self, model, cell):
         super().__init__(model)
         self.cell = cell
         self.avanza = False
@@ -98,7 +98,7 @@ class Semaforo1(CellAgent):
                 self.contador = 0
 
 class Semaforo2(CellAgent):
-    def __init__(self, model, cell):     
+    def __init__(self, model, cell):
         super().__init__(model)
         self.cell = cell
         self.avanza = True
@@ -134,7 +134,7 @@ class Camion(CellAgent):
 
     def calcular_ruta(self):
         self.ruta = breadth_first_search(self.cell.coordinate, self.siguiente_parada, self.model.grid)
-    
+
     def puede_avanzar(self):
         siguiente_celda = self.obtener_siguiente()
         if not siguiente_celda:
@@ -142,7 +142,7 @@ class Camion(CellAgent):
         estado_estacionamiento = None
         for agente in siguiente_celda.agents:
             if isinstance(agente, AgenteCalle):
-                estado_estacionamiento = agente 
+                estado_estacionamiento = agente
             if isinstance(agente, Carro) and not estado_estacionamiento.isEstacionamiento:
                 return False
             if isinstance(agente,Camion) and not estado_estacionamiento.isEstacionamiento:
@@ -151,7 +151,7 @@ class Camion(CellAgent):
                 if not agente.avanza:
                     return False
         return True
-    
+
     def avanzar(self):
         siguiente_celda = self.obtener_siguiente()
         if siguiente_celda:
@@ -164,12 +164,12 @@ class Camion(CellAgent):
         siguiente_pos = self.ruta[0]
         siguiente_celda = self.model.grid[siguiente_pos]
         return siguiente_celda
-    
+
     def cambiar_carril(self):
         x = self.puede_cambiar()
         if x:
             self.ruta = x
-    
+
     def puede_cambiar(self):
         siguiente_celda = self.obtener_siguiente()
         if not siguiente_celda:
@@ -236,7 +236,7 @@ class Carro(CellAgent):
         estado_estacionamiento = None
         for agente in siguiente_celda.agents:
             if isinstance(agente, AgenteCalle):
-                estado_estacionamiento = agente 
+                estado_estacionamiento = agente
             if isinstance(agente, Carro) and not estado_estacionamiento.isEstacionamiento:
                 return False
             if isinstance(agente,Camion) and not estado_estacionamiento.isEstacionamiento:
@@ -261,12 +261,12 @@ class Carro(CellAgent):
         siguiente_pos = self.ruta[0]
         siguiente_celda = self.model.grid[siguiente_pos]
         return siguiente_celda
-    
+
     def cambiar_carril(self):
         x = self.puede_cambiar()
         if x:
             self.ruta = x
-    
+
     def puede_cambiar(self):
         siguiente_celda = self.obtener_siguiente()
         if not siguiente_celda:
@@ -376,18 +376,18 @@ class TrafficModel(mesa.Model):
                     (x == 33 and y == 28) or  # Estacionamiento 11
                     (x == 30 and y == 31) or  # Estacionamiento 6
                     (x == 32 and y == 33) or  # Estacionamiento 9
-                    
+
                     #Nuevos estacionemientos
-                    (x == 9 and y == 2) or   
-                    (x == 2 and y == 2) or   
-                    (x == 45 and y == 2) or   
-                    (x == 2 and y == 15) or   
-                    (x == 2 and y == 19) or   
-                    (x == 6 and y == 43) or   
-                    (x == 36 and y == 38) or  
-                    (x == 44 and y == 18) or  
-                    (x == 35 and y == 2)):  
-                    
+                    (x == 9 and y == 2) or
+                    (x == 2 and y == 2) or
+                    (x == 45 and y == 2) or
+                    (x == 2 and y == 15) or
+                    (x == 2 and y == 19) or
+                    (x == 6 and y == 43) or
+                    (x == 36 and y == 38) or
+                    (x == 44 and y == 18) or
+                    (x == 35 and y == 2)):
+
                     calle.isEstacionamiento = True
                     self.estacionamientos_cells.append(self.grid[(x, y)])
 
@@ -463,7 +463,7 @@ async def simulation_loop():
     while True:
         model.step()
         await send_world_state()
-        await asyncio.sleep(1)  # Delay entre pasos (ajustable)
+        await asyncio.sleep(0.5)  # Delay entre pasos (ajustable)
 
 async def handler(ws):
     """Maneja las conexiones WebSocket"""

@@ -275,67 +275,68 @@ public class MesaSync : MonoBehaviour
         }
     }
 
-    void Update()
-    {
+void Update()
+{
 #if !UNITY_WEBGL || UNITY_EDITOR
-        ws?.DispatchMessageQueue();
+    ws?.DispatchMessageQueue();
 #endif
 
-        // Movimiento suave
-        foreach (var kvp in movementTargets)
+    // Movimiento suave
+    foreach (var kvp in movementTargets)
+    {
+        int id = kvp.Key;
+
+        if (!unityAgents.ContainsKey(id))
+            continue;
+
+        GameObject agent = unityAgents[id];
+
+        Vector3 startPos = previousPositions.ContainsKey(id) ?
+                           previousPositions[id] :
+                           agent.transform.position;
+
+        Vector3 targetPos = movementTargets[id];
+
+        movementTimers[id] += Time.deltaTime;
+        float t = movementTimers[id] / 0.5f;  // duración ahora = 0.5 segundos
+        t = Mathf.Clamp01(t);
+
+        agent.transform.position = Vector3.Lerp(startPos, targetPos, t);
+
+        // cuando termina, guardar nueva posición como anterior
+        if (t >= 1f)
         {
-            int id = kvp.Key;
-
-            if (!unityAgents.ContainsKey(id))
-                continue;
-
-            GameObject agent = unityAgents[id];
-
-            Vector3 startPos = previousPositions.ContainsKey(id) ?
-                               previousPositions[id] :
-                               agent.transform.position;
-
-            Vector3 targetPos = movementTargets[id];
-
-            movementTimers[id] += Time.deltaTime;
-            float t = movementTimers[id] / 1f;  // duración = 1 segundo
-            t = Mathf.Clamp01(t);
-
-            agent.transform.position = Vector3.Lerp(startPos, targetPos, t);
-
-            // cuando termina, guardar nueva posición como anterior
-            if (t >= 1f)
-            {
-                previousPositions[id] = targetPos;
-            }
-        }
-
-        // Rotación suave
-        foreach (var kvp in rotationTargets)
-        {
-            int id = kvp.Key;
-
-            if (!unityAgents.ContainsKey(id))
-                continue;
-
-            GameObject agent = unityAgents[id];
-
-            Quaternion startRot = previousRotations.ContainsKey(id) ?
-                                previousRotations[id] :
-                                agent.transform.rotation;
-
-            Quaternion targetRot = rotationTargets[id];
-
-            rotationTimers[id] += Time.deltaTime;
-            float tRot = rotationTimers[id] / 1f;   // duración = 1 segundo
-            tRot = Mathf.Clamp01(tRot);
-
-            agent.transform.rotation = Quaternion.Lerp(startRot, targetRot, tRot);
-
-            if (tRot >= 1f)
-                previousRotations[id] = targetRot;
+            previousPositions[id] = targetPos;
         }
     }
+
+    // Rotación suave
+    foreach (var kvp in rotationTargets)
+    {
+        int id = kvp.Key;
+
+        if (!unityAgents.ContainsKey(id))
+            continue;
+
+        GameObject agent = unityAgents[id];
+
+        Quaternion startRot = previousRotations.ContainsKey(id) ?
+                              previousRotations[id] :
+                              agent.transform.rotation;
+
+        Quaternion targetRot = rotationTargets[id];
+
+        rotationTimers[id] += Time.deltaTime;
+        float tRot = rotationTimers[id] / 0.5f;   // duración ahora = 0.5 segundos
+        tRot = Mathf.Clamp01(tRot);
+
+        agent.transform.rotation = Quaternion.Lerp(startRot, targetRot, tRot);
+
+        if (tRot >= 1f)
+            previousRotations[id] = targetRot;
+    }
+}
+
 
     private async void OnApplicationQuit()
     {
