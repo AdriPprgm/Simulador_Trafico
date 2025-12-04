@@ -51,10 +51,15 @@ def breadth_first_search(start: tuple, goal: tuple, grid: OrthogonalVonNeumannGr
                 neighbor_cell = grid[cell_pos]
                 has_car = any(isinstance(agent, Carro) for agent in neighbor_cell.agents)
                 is_park = any(isinstance(agent, AgenteCalle) and agent.isEstacionamiento for agent in neighbor_cell.agents)
-                if not has_car or is_park:
+                if not has_car:
                     visited.add(cell_pos)
                     parent[cell_pos] = current
                     queue.append(cell_pos)
+                elif has_car:
+                    if is_park:
+                        visited.add(cell_pos)
+                        parent[cell_pos] = current
+                        queue.append(cell_pos)
     return []
 
 # Clase "AgenteCalle" que tenga valores de dirección asociados, para marcar la circulación.
@@ -192,7 +197,7 @@ class TrafficModel(mesa.Model):
     def __init__(self, n):
         super().__init__()
         self.num_cars = n
-        self.grid = OrthogonalVonNeumannGrid((24, 24), torus = False, capacity = 100, random = self.random)
+        self.grid = OrthogonalVonNeumannGrid((24, 24), torus = False, capacity = 500, random = self.random)
         self.estacionamientos_cells = []
 
         for x in range(width):
@@ -270,7 +275,7 @@ if __name__ == "__main__":
     
     width = 24
     height = 24
-    model = TrafficModel(10)
+    model = TrafficModel(50)
     
     carros = [agent for agent in model.agents if isinstance(agent, Carro)]
     
