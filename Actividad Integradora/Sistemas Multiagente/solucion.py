@@ -110,6 +110,96 @@ class Semaforo2(CellAgent):
 
 # Agente "Camion"
 
+class Camion(CellAgent):
+    def __init__(self, model):
+        super().__init__(model)
+        self.cell = model.grid[(6, 15)]
+        self.ruta = []
+        self.numero_parada = 0
+        self.siguiente_parada = model.paradas_camion_cells[self.numero_parada].coordinate
+        self.contador_espera = 0
+        self.estacionado = False
+
+    def calcular_ruta(self):
+        self.ruta = breadth_first_search(self.cell.coordinate, self.siguiente_parada, self.model.grid)
+    
+    def puede_avanzar(self):
+        siguiente_celda = self.obtener_siguiente()
+        if not siguiente_celda:
+            return False
+        estado_estacionamiento = None
+        for agente in siguiente_celda.agents:
+            if isinstance(agente, AgenteCalle):
+                estado_estacionamiento = agente 
+            if isinstance(agente, Carro) and not estado_estacionamiento.isEstacionamiento:
+                return False
+            if isinstance(agente, (Semaforo1, Semaforo2)):
+                if not agente.avanza:
+                    return False
+        return True
+    
+    def avanzar(self):
+        siguiente_celda = self.obtener_siguiente()
+        if siguiente_celda:
+            self.cell = siguiente_celda
+            self.ruta.pop(0)
+
+    def obtener_siguiente(self):
+        if not self.ruta:
+            return None
+        siguiente_pos = self.ruta[0]
+        siguiente_celda = self.model.grid[siguiente_pos]
+        return siguiente_celda
+    
+    def cambiar_carril(self):
+        x = self.puede_cambiar()
+        if x:
+            self.ruta = x
+    
+    def puede_cambiar(self):
+        siguiente_celda = self.obtener_siguiente()
+        if not siguiente_celda:
+            return False
+        for agente in siguiente_celda.agents:
+            if isinstance(agente, (Semaforo1, Semaforo2)):
+                return False
+        return breadth_first_search(self.cell.coordinate, self.siguiente_parada, self.model.grid)
+
+    def llego_destino(self):
+        return self.cell.coordinate == self.siguiente_parada
+
+    def estacionarse(self):
+        if not self.estacionado:
+            self.estacionado = True
+        else:
+            pass
+
+    def step(self):
+        if not self.ruta:
+            self.calcular_ruta()
+        if not self.estacionado:
+            if self.puede_avanzar():
+                self.avanzar()
+            else:
+                self.cambiar_carril()
+        if self.llego_destino():
+            if self.contador_espera < 5:
+                self.contador_espera += 1
+                pass
+            else:
+                self.contador_espera = 0
+                if self.numero_parada < len(model.paradas_camion_cells) - 1:
+                    self.numero_parada += 1
+                    self.siguiente_parada = model.paradas_camion_cells[self.numero_parada].coordinate
+                    self.calcular_ruta()
+                else:
+                    self.numero_parada = 0
+                    self.siguiente_parada = model.paradas_camion_cells[self.numero_parada].coordinate
+                    self.calcular_ruta()
+        if self.estacionado:
+            pass
+
+
 # Agente "Carro"
 
 class Carro(CellAgent):
@@ -204,6 +294,10 @@ class TrafficModel(mesa.Model):
         self.num_cars = n
         self.grid = OrthogonalVonNeumannGrid((24, 24), torus = False, capacity = 500, random = self.random)
         self.estacionamientos_cells = []
+        self.paradas_camion_cells = [self.grid[(13, 22)],
+                                     self.grid[(22, 13)],
+                                     self.grid[(13, 1)],
+                                     self.grid[(1, 14)]]
 
         for x in range(width):
             for y in range(height):
@@ -264,11 +358,16 @@ class TrafficModel(mesa.Model):
                     calle.isEstacionamiento = True
                     self.estacionamientos_cells.append(self.grid[(x, y)])
     
-        agents = Carro.create_agents(
+        carros = Carro.create_agents(
             self,
             self.num_cars,
             self.random.choices(self.estacionamientos_cells, k=self.num_cars),
 
+        )
+
+        camiones = Camion.create_agents(
+            self,
+            1
         )
     def step(self):
         for agent in list(self.agents):
@@ -284,6 +383,7 @@ if __name__ == "__main__":
     model = TrafficModel(50)
     
     carros = [agent for agent in model.agents if isinstance(agent, Carro)]
+    camiones = [agent for agent in model.agents if isinstance(agent, Camion)]
     
     print(f"Total cars: {len(carros)}")
     for i, carro in enumerate(carros):
@@ -327,16 +427,24 @@ if __name__ == "__main__":
         for carro in carros:
             if not carro.estacionado:
                 x, y = carro.cell.coordinate
-                grid_state[y, x] = 2 
+                grid_state[y, x] = 2
+        
+        for parada in model.paradas_camion_cells:
+            x, y = parada.coordinate
+            grid_state[y, x] = 9
+        
+        for camion in camiones:
+            x, y = camion.cell.coordinate
+            grid_state[y, x] = 7
         
         return grid_state
     
-    colors = ['white', 'lightblue', 'blue', 'red', 'grey', 'green', 'black', 'cyan', 'yellow']
+    colors = ['white', 'lightblue', 'blue', 'red', 'grey', 'green', 'black', 'orange', 'yellow', 'pink']
     cmap = ListedColormap(colors)
     
     step_counter = 0
     
-    while any(not carro.estacionado for carro in carros):
+    while any(not carro.estacionado for carro in carros) or any(not camion.estacionado for camion in camiones):
         model.step()
         step_counter += 1
         
@@ -344,7 +452,7 @@ if __name__ == "__main__":
         
         ax.clear()
 
-        sns.heatmap(grid_state, cmap=cmap, vmin=0, vmax=8,
+        sns.heatmap(grid_state, cmap=cmap, vmin=0, vmax=9,
                    square=True, linewidths=0.5, linecolor='gray',
                    cbar=False, ax=ax, annot=False)
         
