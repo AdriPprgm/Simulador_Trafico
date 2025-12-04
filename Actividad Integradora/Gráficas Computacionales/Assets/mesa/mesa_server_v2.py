@@ -29,7 +29,7 @@ def breadth_first_search(start: tuple, goal: tuple, grid: OrthogonalVonNeumannGr
             path.append(start)
             path.pop(-1)
             return path[::-1]
-        
+
         cell = grid[current].coordinate
         neighbors = diccionario_movimientos.movimientos_posibles[cell[0] + 1][cell[1] + 1]
 
@@ -65,7 +65,7 @@ class AgenteCalle(CellAgent):
 # Agente "Semaforo"
 
 class Semaforo1(CellAgent):
-    def __init__(self, model, cell):     
+    def __init__(self, model, cell):
         super().__init__(model)
         self.cell = cell
         self.avanza = False
@@ -81,7 +81,7 @@ class Semaforo1(CellAgent):
             self.contador = 0
 
 class Semaforo2(CellAgent):
-    def __init__(self, model, cell):     
+    def __init__(self, model, cell):
         super().__init__(model)
         self.cell = cell
         self.avanza = True
@@ -120,7 +120,7 @@ class Carro(CellAgent):
         estado_estacionamiento = None
         for agente in siguiente_celda.agents:
             if isinstance(agente, AgenteCalle):
-                estado_estacionamiento = agente 
+                estado_estacionamiento = agente
             if isinstance(agente, Carro) and not estado_estacionamiento.isEstacionamiento:
                 return False
             if isinstance(agente, (Semaforo1, Semaforo2)):
@@ -143,12 +143,12 @@ class Carro(CellAgent):
         siguiente_pos = self.ruta[0]
         siguiente_celda = self.model.grid[siguiente_pos]
         return siguiente_celda
-    
+
     def cambiar_carril(self):
         x = self.puede_cambiar()
         if x:
             self.ruta = x
-    
+
     def puede_cambiar(self):
         siguiente_celda = self.obtener_siguiente()
         if not siguiente_celda:
@@ -197,7 +197,7 @@ class TrafficModel(mesa.Model):
             for y in range(height):
                 cell = self.grid[(x, y)]
                 calle = AgenteCalle(self, cell)
-                
+
                 #Set Semaforos1
                 if (x == 21 and (y == 4 or y == 5 or y == 10 or y == 11) or
                     x == 2 and (y == 4 or y == 5 or y == 8 or y == 9) or
@@ -214,7 +214,7 @@ class TrafficModel(mesa.Model):
                     y == 12 and (x == 22 or x == 23) or
                     y == 21 and (x == 8 or x == 9 or x == 16 or x == 17)):
                     semaforo2 = Semaforo2(self, cell)
-        
+
                 #Set Buildings
                 if ((1 < x < 4) and (1 < y < 4) or
                     (1 < x < 4) and (5 < y < 8) or
@@ -230,7 +230,7 @@ class TrafficModel(mesa.Model):
                     (17 < x < 22) and (11 < y < 22) or
                     (8 < x < 11) and (8 < y < 11)):
                     calle.isBuilding = True
-                
+
                 #Set Estacionamiento
                 if ((x == 3 and y == 3) or  # Estacionamiento 13
                     (x == 7 and y == 6) or  # Estacionamiento 17
@@ -251,7 +251,7 @@ class TrafficModel(mesa.Model):
                     (x == 20 and y == 21)):  # Estacionamiento 9
                     calle.isEstacionamiento = True
                     self.estacionamientos_cells.append(self.grid[(x, y)])
-    
+
         agents = Carro.create_agents(
             self,
             self.num_cars,
