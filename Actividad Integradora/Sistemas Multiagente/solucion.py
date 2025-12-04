@@ -43,23 +43,33 @@ def breadth_first_search(start: tuple, goal: tuple, grid: OrthogonalVonNeumannGr
             return path[::-1]
         
         cell = grid[current].coordinate
-        neighbors = diccionario_movimientos.movimientos_posibles[cell[0] + 1][cell[1] + 1]
+        dict_x = cell[0] + 1
+        dict_y = cell[1] + 1
+        
+        if dict_x not in diccionario_movimientos.adjusted_movement_map:
+            continue
+        if dict_y not in diccionario_movimientos.adjusted_movement_map[dict_x]:
+            continue
+            
+        neighbors = diccionario_movimientos.adjusted_movement_map[dict_x][dict_y]
 
         for i in neighbors:
             cell_pos = (i[0] - 1, i[1] - 1)
+            
+            # Validar que cell_pos esté dentro del grid (0-47)
+            if (cell_pos[0] < 0 or cell_pos[0] >= 48 or 
+                cell_pos[1] < 0 or cell_pos[1] >= 48):
+                continue
+            
             if cell_pos not in visited:
                 neighbor_cell = grid[cell_pos]
+                has_truck = any(isinstance(agent, Camion) for agent in neighbor_cell.agents)
                 has_car = any(isinstance(agent, Carro) for agent in neighbor_cell.agents)
                 is_park = any(isinstance(agent, AgenteCalle) and agent.isEstacionamiento for agent in neighbor_cell.agents)
-                if not has_car:
+                if is_park or (not has_car and not has_truck):
                     visited.add(cell_pos)
                     parent[cell_pos] = current
                     queue.append(cell_pos)
-                elif has_car:
-                    if is_park:
-                        visited.add(cell_pos)
-                        parent[cell_pos] = current
-                        queue.append(cell_pos)
     return []
 
 # Clase "AgenteCalle" que tenga valores de dirección asociados, para marcar la circulación.
@@ -127,7 +137,7 @@ class Semaforo2(CellAgent):
 class Camion(CellAgent):
     def __init__(self, model):
         super().__init__(model)
-        self.cell = model.grid[(6, 15)]
+        self.cell = model.grid[(18, 27)]
         self.ruta = []
         self.numero_parada = 0
         self.siguiente_parada = model.paradas_camion_cells[self.numero_parada].coordinate
@@ -146,6 +156,8 @@ class Camion(CellAgent):
             if isinstance(agente, AgenteCalle):
                 estado_estacionamiento = agente 
             if isinstance(agente, Carro) and not estado_estacionamiento.isEstacionamiento:
+                return False
+            if isinstance(agente,Camion) and not estado_estacionamiento.isEstacionamiento:
                 return False
             if isinstance(agente, (Semaforo1, Semaforo2)):
                 if not agente.avanza:
@@ -239,6 +251,8 @@ class Carro(CellAgent):
                 estado_estacionamiento = agente 
             if isinstance(agente, Carro) and not estado_estacionamiento.isEstacionamiento:
                 return False
+            if isinstance(agente,Camion) and not estado_estacionamiento.isEstacionamiento:
+                return False
             if isinstance(agente, (Semaforo1, Semaforo2)):
                 if not agente.avanza:
                     return False
@@ -306,82 +320,89 @@ class TrafficModel(mesa.Model):
     def __init__(self, n):
         super().__init__()
         self.num_cars = n
-        self.grid = OrthogonalVonNeumannGrid((24, 24), torus = False, capacity = 500, random = self.random)
+        self.grid = OrthogonalVonNeumannGrid((48, 48), torus = False, capacity = 500, random = self.random)
         self.estacionamientos_cells = []
-        self.paradas_camion_cells = [self.grid[(13, 22)],
-                                     self.grid[(22, 13)],
-                                     self.grid[(13, 1)],
-                                     self.grid[(1, 14)]]
+        self.paradas_camion_cells = [self.grid[(25, 34)],
+                                     self.grid[(34, 25)],
+                                     self.grid[(25, 13)],
+                                     self.grid[(13, 26)]]
 
         for x in range(width):
             for y in range(height):
                 cell = self.grid[(x, y)]
                 calle = AgenteCalle(self, cell)
-                
-                #Set Semaforos1
-                if (x == 21 and (y == 4 or y == 5 or y == 10 or y == 11) or
-                    x == 2 and (y == 4 or y == 5 or y == 8 or y == 9) or
-                    x == 7 and (y == 22 or y == 23) or
-                    x == 15 and (y == 22 or y == 23) or
-                    x == 12 and (y == 0 or y == 1)):
+
+                #Set Semaforos1 (sumamos +12 a todas las coordenadas)
+                if (x == 33 and (y == 16 or y == 17 or y == 22 or y == 23) or
+                    x == 14 and (y == 16 or y == 17 or y == 20 or y == 21) or
+                    x == 19 and (y == 34 or y == 35) or
+                    x == 27 and (y == 34 or y == 35) or
+                    x == 24 and (y == 12 or y == 13)):
                     semaforo1 = Semaforo1(self, cell)
 
-                #Set Semaforos2
-                if (y == 3 and (x == 0 or x == 1) or
-                    y == 7 and (x == 0 or x == 1) or
-                    y == 2 and (x == 10 or x == 11) or
-                    y == 6 and (x == 22 or x == 23) or
-                    y == 12 and (x == 22 or x == 23) or
-                    y == 21 and (x == 8 or x == 9 or x == 16 or x == 17)):
+                #Set Semaforos2 (sumamos +12 a todas las coordenadas)
+                if (y == 15 and (x == 12 or x == 13) or
+                    y == 19 and (x == 12 or x == 13) or
+                    y == 14 and (x == 22 or x == 23) or
+                    y == 18 and (x == 34 or x == 35) or
+                    y == 24 and (x == 34 or x == 35) or
+                    y == 33 and (x == 20 or x == 21 or x == 28 or x == 29)):
                     semaforo2 = Semaforo2(self, cell)
-        
+
                 #Set Buildings
-                if ((1 < x < 4) and (1 < y < 4) or
-                    (1 < x < 4) and (5 < y < 8) or
-                    (1 < x < 4) and (11 < y < 16) or
-                    (1 < x < 8) and (17 < y < 22) or
-                    (5 < x < 8) and (1 < y < 4) or
-                    (5 < x < 8) and (5 < y < 8) or
-                    (5 < x < 8) and (11 < y < 16) or
-                    (11 < x < 22) and (1 < y < 4) or
-                    (11 < x < 22) and (5 < y < 8) or
-                    (11 < x < 16) and (11 < y < 15) or
-                    (11 < x < 16) and (16 < y < 22) or
-                    (17 < x < 22) and (11 < y < 22) or
-                    (8 < x < 11) and (8 < y < 11)):
+                dict_x = x + 1
+                dict_y = y + 1
+                if dict_x in diccionario_movimientos.adjusted_movement_map:
+                    if dict_y in diccionario_movimientos.adjusted_movement_map[dict_x]:
+                        if not diccionario_movimientos.adjusted_movement_map[dict_x][dict_y]:
+                            calle.isBuilding = True
+                    else:
+                        calle.isBuilding = True
+                else:
                     calle.isBuilding = True
-                
-                #Set Estacionamiento
-                if ((x == 3 and y == 3) or  # Estacionamiento 13
-                    (x == 7 and y == 6) or  # Estacionamiento 17
-                    (x == 3 and y == 12) or  # Estacionamiento 12
-                    (x == 6 and y == 15) or  # Estacionamiento 15
-                    (x == 6 and y == 18) or  # Estacionamiento 16
-                    (x == 4 and y == 21) or  # Estacionamiento 14
-                    (x == 13 and y == 3) or  # Estacionamiento 2
-                    (x == 14 and y == 6) or  # Estacionamiento 5
-                    (x == 14 and y == 14) or  # Estacionamiento 3
-                    (x == 12 and y == 18) or  # Estacionamiento 1
-                    (x == 14 and y == 21) or  # Estacionamiento 4
-                    (x == 20 and y == 2) or  # Estacionamiento 10
-                    (x == 19 and y == 7) or  # Estacionamiento 8
-                    (x == 19 and y == 12) or  # Estacionamiento 7
-                    (x == 21 and y == 16) or  # Estacionamiento 11
-                    (x == 18 and y == 19) or  # Estacionamiento 6
-                    (x == 20 and y == 21)):  # Estacionamiento 9
+
+                #Set Estacionamiento (sumamos +12 a todas las coordenadas)
+                if ((x == 15 and y == 15) or  # Estacionamiento 13
+                    (x == 19 and y == 18) or  # Estacionamiento 17
+                    (x == 15 and y == 24) or  # Estacionamiento 12
+                    (x == 18 and y == 27) or  # Estacionamiento 15
+                    (x == 18 and y == 30) or  # Estacionamiento 16
+                    (x == 16 and y == 33) or  # Estacionamiento 14
+                    (x == 25 and y == 15) or  # Estacionamiento 2
+                    (x == 26 and y == 18) or  # Estacionamiento 5
+                    (x == 26 and y == 26) or  # Estacionamiento 3
+                    (x == 24 and y == 30) or  # Estacionamiento 1
+                    (x == 26 and y == 33) or  # Estacionamiento 4
+                    (x == 32 and y == 14) or  # Estacionamiento 10
+                    (x == 31 and y == 19) or  # Estacionamiento 8
+                    (x == 31 and y == 24) or  # Estacionamiento 7
+                    (x == 33 and y == 28) or  # Estacionamiento 11
+                    (x == 30 and y == 31) or  # Estacionamiento 6
+                    (x == 32 and y == 33) or  # Estacionamiento 9
+                    
+                    #Nuevos estacionemientos
+                    (x == 9 and y == 2) or   
+                    (x == 2 and y == 2) or   
+                    (x == 45 and y == 2) or   
+                    (x == 2 and y == 15) or   
+                    (x == 2 and y == 19) or   
+                    (x == 6 and y == 43) or   
+                    (x == 36 and y == 38) or  
+                    (x == 44 and y == 18) or  
+                    (x == 35 and y == 2)):  
+                    
                     calle.isEstacionamiento = True
                     self.estacionamientos_cells.append(self.grid[(x, y)])
-    
-        carros = Carro.create_agents(
+
+        agents = Carro.create_agents(
             self,
             self.num_cars,
             self.random.choices(self.estacionamientos_cells, k=self.num_cars),
 
         )
-
         camiones = Camion.create_agents(
             self,
-            1
+            3
         )
     def step(self):
         for agent in list(self.agents):
@@ -392,8 +413,8 @@ if __name__ == "__main__":
     
     print("Testing Carro agents with visualization...")
     
-    width = 24
-    height = 24
+    width = 48
+    height = 48
     model = TrafficModel(50)
     
     carros = [agent for agent in model.agents if isinstance(agent, Carro)]
@@ -471,10 +492,10 @@ if __name__ == "__main__":
                    cbar=False, ax=ax, annot=False)
         
         # Dibujar camellones
-        ax.plot([10, 10], [2, 8], color='black', linewidth=3)
-        ax.plot([10, 10], [12, 22], color='black', linewidth=3)
-        ax.plot([2, 8], [10, 10], color='black', linewidth=3)
-        ax.plot([12, 22], [10, 10], color='black', linewidth=3)
+        ax.plot([22, 22], [14, 20], color='black', linewidth=3)
+        ax.plot([22, 22], [24, 34], color='black', linewidth=3)
+        ax.plot([14, 20], [22, 22], color='black', linewidth=3)
+        ax.plot([24, 34], [22, 22], color='black', linewidth=3)
         
         active_cars = sum(1 for carro in carros if not carro.estacionado)
         ax.set_title(f'Traffic Simulation - Step {step_counter}\nActive Cars: {active_cars}/{len(carros)}', fontsize=14)
