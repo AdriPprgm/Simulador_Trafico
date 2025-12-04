@@ -26083,7 +26083,7 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 761480014}
+  m_Mesh: {fileID: 527786860}
 --- !u!33 &604699142
 MeshFilter:
   m_ObjectHideFlags: 10
@@ -33424,7 +33424,7 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 492552352}
+  m_Mesh: {fileID: 144334030}
 --- !u!33 &752230879
 MeshFilter:
   m_ObjectHideFlags: 10
@@ -47284,7 +47284,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MesaSync
   serverUrl: ws://localhost:8765
-  carroPrefab: {fileID: 100008, guid: f33fcdf90e7034971b3e1a639b7b0355, type: 3}
+  carroPrefabs:
+  - {fileID: 2971182762721409588, guid: 57bacd649e4976d469e24df5b753ce6d, type: 3}
+  - {fileID: 1589054073815262651, guid: 583f08b178a28744d89112df3bb6eaf5, type: 3}
+  - {fileID: 7786758044783744320, guid: b4a13ea13bd7acf47a8d4062804569f4, type: 3}
+  - {fileID: 2168354889617425785, guid: 4caf1ca995e6d00488434aea0330f609, type: 3}
+  - {fileID: 3634421511324662714, guid: 12e2e8bdee0508a4c91e4fbb72595066, type: 3}
+  - {fileID: 4921500710605144598, guid: 1b60633b647fb2944a777567ad8510e1, type: 3}
+  - {fileID: 329000695301910546, guid: 34291fc1114971043b490a2f76ad8eba, type: 3}
+  - {fileID: 3972730393507223883, guid: 8b1f9b38324df314f8441fc3130796d5, type: 3}
+  - {fileID: 1686417372115648107, guid: a59e276d16b285740a302bd3634b1d24, type: 3}
   semaforo1Prefab: {fileID: 5556026952270296581}
   semaforo2Prefab: {fileID: 8719629533719929476}
   callePrefab: {fileID: 6626219455187341395}
@@ -63750,7 +63759,7 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 972006049}
+  m_Mesh: {fileID: 1659420680}
 --- !u!33 &1381775778
 MeshFilter:
   m_ObjectHideFlags: 10
@@ -97509,7 +97518,7 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 1221540344}
+  m_Mesh: {fileID: 1332283189}
 --- !u!33 &2066965823
 MeshFilter:
   m_ObjectHideFlags: 10

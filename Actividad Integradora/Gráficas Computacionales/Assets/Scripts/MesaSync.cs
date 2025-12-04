@@ -12,7 +12,7 @@ public class MesaSync : MonoBehaviour
     public string serverUrl = "ws://localhost:8765";
 
     [Header("Prefabs por Tipo de Agente")]
-    public GameObject carroPrefab;
+    public GameObject[] carroPrefabs; // Ahora es un array
     public GameObject semaforo1Prefab;
     public GameObject semaforo2Prefab;
     public GameObject callePrefab;
@@ -33,6 +33,9 @@ public class MesaSync : MonoBehaviour
     private Dictionary<int, Quaternion> previousRotations = new Dictionary<int, Quaternion>();
     private Dictionary<int, Quaternion> rotationTargets = new Dictionary<int, Quaternion>();
     private Dictionary<int, float> rotationTimers = new Dictionary<int, float>();
+
+    // Diccionario para recordar qué prefab se usó para cada carro
+    private Dictionary<int, int> carPrefabIndices = new Dictionary<int, int>();
 
 
     async void Start()
@@ -82,7 +85,7 @@ public class MesaSync : MonoBehaviour
             // Si el agente no existe en Unity, lo creamos
             if (!unityAgents.ContainsKey(id))
             {
-                GameObject prefab = GetPrefabForType(agentType, agentData);
+                GameObject prefab = GetPrefabForType(agentType, agentData, id);
 
                 if (prefab != null)
                 {
@@ -146,16 +149,39 @@ public class MesaSync : MonoBehaviour
         {
             Destroy(unityAgents[id]);
             unityAgents.Remove(id);
+            carPrefabIndices.Remove(id); // Limpiar también el índice del prefab
+            previousPositions.Remove(id);
+            movementTargets.Remove(id);
+            movementTimers.Remove(id);
+            previousRotations.Remove(id);
+            rotationTargets.Remove(id);
+            rotationTimers.Remove(id);
             Debug.Log($"Agente {id} removido (estacionado)");
         }
     }
 
-    GameObject GetPrefabForType(string agentType, JToken agentData)
+    GameObject GetPrefabForType(string agentType, JToken agentData, int id)
     {
         switch (agentType)
         {
             case "Carro":
-                return carroPrefab;
+                // Si ya tenemos un prefab asignado para este carro, usarlo
+                if (carPrefabIndices.ContainsKey(id))
+                {
+                    return carroPrefabs[carPrefabIndices[id]];
+                }
+                
+                // Si es nuevo, asignar un prefab aleatorio
+                if (carroPrefabs != null && carroPrefabs.Length > 0)
+                {
+                    int randomIndex = Random.Range(0, carroPrefabs.Length);
+                    carPrefabIndices[id] = randomIndex;
+                    return carroPrefabs[randomIndex];
+                }
+                
+                Debug.LogWarning("No hay prefabs de carro asignados en el array");
+                return null;
+
             case "Semaforo1":
                 return semaforo1Prefab;
             case "Semaforo2":
@@ -240,67 +266,67 @@ public class MesaSync : MonoBehaviour
         }
     }
 
-void Update()
-{
+    void Update()
+    {
 #if !UNITY_WEBGL || UNITY_EDITOR
-    ws?.DispatchMessageQueue();
+        ws?.DispatchMessageQueue();
 #endif
 
-    // Movimiento suave
-    foreach (var kvp in movementTargets)
-    {
-        int id = kvp.Key;
-
-        if (!unityAgents.ContainsKey(id))
-            continue;
-
-        GameObject agent = unityAgents[id];
-
-        Vector3 startPos = previousPositions.ContainsKey(id) ?
-                           previousPositions[id] :
-                           agent.transform.position;
-
-        Vector3 targetPos = movementTargets[id];
-
-        movementTimers[id] += Time.deltaTime;
-        float t = movementTimers[id] / 1f;  // duración = 1 segundo
-        t = Mathf.Clamp01(t);
-
-        agent.transform.position = Vector3.Lerp(startPos, targetPos, t);
-
-        // cuando termina, guardar nueva posición como anterior
-        if (t >= 1f)
+        // Movimiento suave
+        foreach (var kvp in movementTargets)
         {
-            previousPositions[id] = targetPos;
+            int id = kvp.Key;
+
+            if (!unityAgents.ContainsKey(id))
+                continue;
+
+            GameObject agent = unityAgents[id];
+
+            Vector3 startPos = previousPositions.ContainsKey(id) ?
+                               previousPositions[id] :
+                               agent.transform.position;
+
+            Vector3 targetPos = movementTargets[id];
+
+            movementTimers[id] += Time.deltaTime;
+            float t = movementTimers[id] / 1f;  // duración = 1 segundo
+            t = Mathf.Clamp01(t);
+
+            agent.transform.position = Vector3.Lerp(startPos, targetPos, t);
+
+            // cuando termina, guardar nueva posición como anterior
+            if (t >= 1f)
+            {
+                previousPositions[id] = targetPos;
+            }
+        }
+
+        // Rotación suave
+        foreach (var kvp in rotationTargets)
+        {
+            int id = kvp.Key;
+
+            if (!unityAgents.ContainsKey(id))
+                continue;
+
+            GameObject agent = unityAgents[id];
+
+            Quaternion startRot = previousRotations.ContainsKey(id) ?
+                                previousRotations[id] :
+                                agent.transform.rotation;
+
+            Quaternion targetRot = rotationTargets[id];
+
+            rotationTimers[id] += Time.deltaTime;
+            float tRot = rotationTimers[id] / 1f;   // duración = 1 segundo
+            tRot = Mathf.Clamp01(tRot);
+
+            agent.transform.rotation = Quaternion.Lerp(startRot, targetRot, tRot);
+
+            if (tRot >= 1f)
+                previousRotations[id] = targetRot;
         }
     }
-        // Rotación suave
-    foreach (var kvp in rotationTargets)
-    {
-        int id = kvp.Key;
-
-        if (!unityAgents.ContainsKey(id))
-            continue;
-
-        GameObject agent = unityAgents[id];
-
-        Quaternion startRot = previousRotations.ContainsKey(id) ?
-                            previousRotations[id] :
-                            agent.transform.rotation;
-
-        Quaternion targetRot = rotationTargets[id];
-
-        rotationTimers[id] += Time.deltaTime;
-        float tRot = rotationTimers[id] / 1f;   // duración = 1 segundo
-        tRot = Mathf.Clamp01(tRot);
-
-        agent.transform.rotation = Quaternion.Lerp(startRot, targetRot, tRot);
-
-        if (tRot >= 1f)
-            previousRotations[id] = targetRot;
-    }
-
-}
 
     private async void OnApplicationQuit()
     {
