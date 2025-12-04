@@ -304,7 +304,7 @@ async def simulation_loop():
     while True:
         model.step()
         await send_world_state()
-        await asyncio.sleep(0.5)  # Delay entre pasos (ajustable)
+        await asyncio.sleep(1)  # Delay entre pasos (ajustable)
 
 async def handler(ws):
     """Maneja las conexiones WebSocket"""

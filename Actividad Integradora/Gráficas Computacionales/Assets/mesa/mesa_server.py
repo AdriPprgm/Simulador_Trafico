@@ -22,23 +22,23 @@ class MyModel(mesa.Model):
         super().__init__()
         # Inicializamos el Grid (MultiGrid permite varios agentes en la misma celda)
         self.grid = mesa.space.MultiGrid(width, height, torus=False)
-        
+
         # YA NO USAMOS self.schedule = RandomActivation(self)
         # Mesa 3.0+ gestiona los agentes nativamente en 'self.agents'
-        
+
         # Mantenemos un diccionario auxiliar para acceso rápido O(1) por ID
         # ya que el WebSocket envía IDs específicos.
-        self.agents_dict = {} 
+        self.agents_dict = {}
 
     def add_agent(self, agent_id, x, y):
         if agent_id not in self.agents_dict:
             # Instanciamos el agente pasando el modelo (self)
             a = MyAgent(agent_id, self)
-            
+
             # Al crear el agente con 'self', Mesa 3.0 lo añade automáticamente a self.agents
             # Nosotros lo guardamos en nuestro dict para control manual
             self.agents_dict[agent_id] = a
-            
+
             # Colocar en el grid
             self.grid.place_agent(a, (x, y))
 
@@ -96,13 +96,13 @@ async def receive_message(message):
 async def send_world_state():
     if not connected_clients:
         return
-    
+
     state = {
         "type": "update",
         "agents": model.serialize_grid()
     }
     msg = json.dumps(state)
-    
+
     # Broadcast a todos los clientes
     websockets.broadcast(connected_clients, msg)
 

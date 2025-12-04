@@ -10,7 +10,7 @@ public class MesaSync : MonoBehaviour
 
     [Header("Configuración de Conexión")]
     public string serverUrl = "ws://localhost:8765";
-    
+
     [Header("Prefabs por Tipo de Agente")]
     public GameObject carroPrefab;
     public GameObject semaforo1Prefab;
@@ -24,6 +24,16 @@ public class MesaSync : MonoBehaviour
 
     // Diccionario para guardar la posición anterior de cada carro
     private Dictionary<int, Vector3> previousPositions = new Dictionary<int, Vector3>();
+
+    // Posición actual y futura
+    private Dictionary<int, Vector3> movementTargets = new Dictionary<int, Vector3>();
+    private Dictionary<int, float> movementTimers = new Dictionary<int, float>();
+
+    // Rotación suave insana
+    private Dictionary<int, Quaternion> previousRotations = new Dictionary<int, Quaternion>();
+    private Dictionary<int, Quaternion> rotationTargets = new Dictionary<int, Quaternion>();
+    private Dictionary<int, float> rotationTimers = new Dictionary<int, float>();
+
 
     async void Start()
     {
@@ -73,13 +83,13 @@ public class MesaSync : MonoBehaviour
             if (!unityAgents.ContainsKey(id))
             {
                 GameObject prefab = GetPrefabForType(agentType, agentData);
-                
+
                 if (prefab != null)
                 {
                     GameObject newAgent = Instantiate(prefab);
                     newAgent.name = $"{agentType}_{id}";
                     unityAgents[id] = newAgent;
-                    
+
                     // Configurar propiedades específicas
                     ConfigureAgent(newAgent, agentType, agentData);
                 }
@@ -99,38 +109,24 @@ public class MesaSync : MonoBehaviour
                 if (previousPositions.ContainsKey(id))
                 {
                     Vector3 direction = targetPosition - previousPositions[id];
-                    
-                    // Solo rotar si hay movimiento significativo
+
                     if (direction.magnitude > 0.01f)
                     {
-                        // Calcular el ángulo basado en la dirección
                         float angle = 0f;
-                        
+
                         if (Mathf.Abs(direction.x) > Mathf.Abs(direction.z))
-                        {
-                            // Movimiento horizontal (Este u Oeste)
                             angle = direction.x > 0 ? 90f : -90f;
-                        }
                         else
-                        {
-                            // Movimiento vertical (Norte o Sur)
                             angle = direction.z > 0 ? 0f : 180f;
-                        }
-                        
-                        unityAgents[id].transform.rotation = Quaternion.Euler(0, angle, 0);
+
+                        rotationTargets[id] = Quaternion.Euler(0, angle, 0);
+                        rotationTimers[id] = 0f;
                     }
                 }
-                // else
-                // {
-                //     // Rotación inicial para carros nuevos
-                //     unityAgents[id].transform.rotation = Quaternion.Euler(0, 0, 0);
-                // }
-                
-                // Guardar la posición actual para el próximo frame
-                previousPositions[id] = targetPosition;
             }
 
-            unityAgents[id].transform.position = targetPosition;
+            movementTargets[id] = targetPosition;
+            movementTimers[id] = 0f; // reiniciar el temporizador de animación
 
             // Actualizar propiedades específicas del agente
             UpdateAgentProperties(unityAgents[id], agentType, agentData);
@@ -168,7 +164,7 @@ public class MesaSync : MonoBehaviour
                 // Diferenciar entre calle, building y estacionamiento
                 bool isBuilding = agentData["isBuilding"] != null ? (bool)agentData["isBuilding"] : false;
                 bool isEstacionamiento = agentData["isEstacionamiento"] != null ? (bool)agentData["isEstacionamiento"] : false;
-                
+
                 if (isBuilding)
                     return buildingPrefab;
                 else if (isEstacionamiento)
@@ -245,12 +241,67 @@ public class MesaSync : MonoBehaviour
         }
     }
 
-    void Update()
-    {
+void Update()
+{
 #if !UNITY_WEBGL || UNITY_EDITOR
-        ws?.DispatchMessageQueue();
+    ws?.DispatchMessageQueue();
 #endif
+
+    // Movimiento suave
+    foreach (var kvp in movementTargets)
+    {
+        int id = kvp.Key;
+
+        if (!unityAgents.ContainsKey(id))
+            continue;
+
+        GameObject agent = unityAgents[id];
+
+        Vector3 startPos = previousPositions.ContainsKey(id) ?
+                           previousPositions[id] :
+                           agent.transform.position;
+
+        Vector3 targetPos = movementTargets[id];
+
+        movementTimers[id] += Time.deltaTime;
+        float t = movementTimers[id] / 1f;  // duración = 1 segundo
+        t = Mathf.Clamp01(t);
+
+        agent.transform.position = Vector3.Lerp(startPos, targetPos, t);
+
+        // cuando termina, guardar nueva posición como anterior
+        if (t >= 1f)
+        {
+            previousPositions[id] = targetPos;
+        }
     }
+        // Rotación suave
+    foreach (var kvp in rotationTargets)
+    {
+        int id = kvp.Key;
+
+        if (!unityAgents.ContainsKey(id))
+            continue;
+
+        GameObject agent = unityAgents[id];
+
+        Quaternion startRot = previousRotations.ContainsKey(id) ?
+                            previousRotations[id] :
+                            agent.transform.rotation;
+
+        Quaternion targetRot = rotationTargets[id];
+
+        rotationTimers[id] += Time.deltaTime;
+        float tRot = rotationTimers[id] / 1f;   // duración = 1 segundo
+        tRot = Mathf.Clamp01(tRot);
+
+        agent.transform.rotation = Quaternion.Lerp(startRot, targetRot, tRot);
+
+        if (tRot >= 1f)
+            previousRotations[id] = targetRot;
+    }
+
+}
 
     private async void OnApplicationQuit()
     {
