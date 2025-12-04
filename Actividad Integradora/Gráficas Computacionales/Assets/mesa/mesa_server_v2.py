@@ -31,10 +31,26 @@ def breadth_first_search(start: tuple, goal: tuple, grid: OrthogonalVonNeumannGr
             return path[::-1]
 
         cell = grid[current].coordinate
-        neighbors = diccionario_movimientos.movimientos_posibles[cell[0] + 1][cell[1] + 1]
+        
+        # Validar que cell esté dentro del rango del diccionario
+        dict_x = cell[0] + 1
+        dict_y = cell[1] + 1
+        
+        if dict_x not in diccionario_movimientos.adjusted_movement_map:
+            continue
+        if dict_y not in diccionario_movimientos.adjusted_movement_map[dict_x]:
+            continue
+            
+        neighbors = diccionario_movimientos.adjusted_movement_map[dict_x][dict_y]
 
         for i in neighbors:
             cell_pos = (i[0] - 1, i[1] - 1)
+            
+            # Validar que cell_pos esté dentro del grid (0-47)
+            if (cell_pos[0] < 0 or cell_pos[0] >= 48 or 
+                cell_pos[1] < 0 or cell_pos[1] >= 48):
+                continue
+            
             if cell_pos not in visited:
                 neighbor_cell = grid[cell_pos]
                 has_car = any(isinstance(agent, Carro) for agent in neighbor_cell.agents)
@@ -190,7 +206,7 @@ class TrafficModel(mesa.Model):
     def __init__(self, n):
         super().__init__()
         self.num_cars = n
-        self.grid = OrthogonalVonNeumannGrid((24, 24), torus = False, capacity = 500, random = self.random)
+        self.grid = OrthogonalVonNeumannGrid((48, 48), torus = False, capacity = 500, random = self.random)
         self.estacionamientos_cells = []
 
         for x in range(width):
@@ -198,57 +214,57 @@ class TrafficModel(mesa.Model):
                 cell = self.grid[(x, y)]
                 calle = AgenteCalle(self, cell)
 
-                #Set Semaforos1
-                if (x == 21 and (y == 4 or y == 5 or y == 10 or y == 11) or
-                    x == 2 and (y == 4 or y == 5 or y == 8 or y == 9) or
-                    x == 7 and (y == 22 or y == 23) or
-                    x == 15 and (y == 22 or y == 23) or
-                    x == 12 and (y == 0 or y == 1)):
+                #Set Semaforos1 (sumamos +12 a todas las coordenadas)
+                if (x == 33 and (y == 16 or y == 17 or y == 22 or y == 23) or
+                    x == 14 and (y == 16 or y == 17 or y == 20 or y == 21) or
+                    x == 19 and (y == 34 or y == 35) or
+                    x == 27 and (y == 34 or y == 35) or
+                    x == 24 and (y == 12 or y == 13)):
                     semaforo1 = Semaforo1(self, cell)
 
-                #Set Semaforos2
-                if (y == 3 and (x == 0 or x == 1) or
-                    y == 7 and (x == 0 or x == 1) or
-                    y == 2 and (x == 10 or x == 11) or
-                    y == 6 and (x == 22 or x == 23) or
-                    y == 12 and (x == 22 or x == 23) or
-                    y == 21 and (x == 8 or x == 9 or x == 16 or x == 17)):
+                #Set Semaforos2 (sumamos +12 a todas las coordenadas)
+                if (y == 15 and (x == 12 or x == 13) or
+                    y == 19 and (x == 12 or x == 13) or
+                    y == 14 and (x == 22 or x == 23) or
+                    y == 18 and (x == 34 or x == 35) or
+                    y == 24 and (x == 34 or x == 35) or
+                    y == 33 and (x == 20 or x == 21 or x == 28 or x == 29)):
                     semaforo2 = Semaforo2(self, cell)
 
-                #Set Buildings
-                if ((1 < x < 4) and (1 < y < 4) or
-                    (1 < x < 4) and (5 < y < 8) or
-                    (1 < x < 4) and (11 < y < 16) or
-                    (1 < x < 8) and (17 < y < 22) or
-                    (5 < x < 8) and (1 < y < 4) or
-                    (5 < x < 8) and (5 < y < 8) or
-                    (5 < x < 8) and (11 < y < 16) or
-                    (11 < x < 22) and (1 < y < 4) or
-                    (11 < x < 22) and (5 < y < 8) or
-                    (11 < x < 16) and (11 < y < 15) or
-                    (11 < x < 16) and (16 < y < 22) or
-                    (17 < x < 22) and (11 < y < 22) or
-                    (8 < x < 11) and (8 < y < 11)):
+                #Set Buildings (sumamos +12 a todas las coordenadas)
+                if ((13 < x < 16) and (13 < y < 16) or
+                    (13 < x < 16) and (17 < y < 20) or
+                    (13 < x < 16) and (23 < y < 28) or
+                    (13 < x < 20) and (29 < y < 34) or
+                    (17 < x < 20) and (13 < y < 16) or
+                    (17 < x < 20) and (17 < y < 20) or
+                    (17 < x < 20) and (23 < y < 28) or
+                    (23 < x < 34) and (13 < y < 16) or
+                    (23 < x < 34) and (17 < y < 20) or
+                    (23 < x < 28) and (23 < y < 27) or
+                    (23 < x < 28) and (28 < y < 34) or
+                    (29 < x < 34) and (23 < y < 34) or
+                    (20 < x < 23) and (20 < y < 23)):
                     calle.isBuilding = True
 
-                #Set Estacionamiento
-                if ((x == 3 and y == 3) or  # Estacionamiento 13
-                    (x == 7 and y == 6) or  # Estacionamiento 17
-                    (x == 3 and y == 12) or  # Estacionamiento 12
-                    (x == 6 and y == 15) or  # Estacionamiento 15
-                    (x == 6 and y == 18) or  # Estacionamiento 16
-                    (x == 4 and y == 21) or  # Estacionamiento 14
-                    (x == 13 and y == 3) or  # Estacionamiento 2
-                    (x == 14 and y == 6) or  # Estacionamiento 5
-                    (x == 14 and y == 14) or  # Estacionamiento 3
-                    (x == 12 and y == 18) or  # Estacionamiento 1
-                    (x == 14 and y == 21) or  # Estacionamiento 4
-                    (x == 20 and y == 2) or  # Estacionamiento 10
-                    (x == 19 and y == 7) or  # Estacionamiento 8
-                    (x == 19 and y == 12) or  # Estacionamiento 7
-                    (x == 21 and y == 16) or  # Estacionamiento 11
-                    (x == 18 and y == 19) or  # Estacionamiento 6
-                    (x == 20 and y == 21)):  # Estacionamiento 9
+                #Set Estacionamiento (sumamos +12 a todas las coordenadas)
+                if ((x == 15 and y == 15) or  # Estacionamiento 13
+                    (x == 19 and y == 18) or  # Estacionamiento 17
+                    (x == 15 and y == 24) or  # Estacionamiento 12
+                    (x == 18 and y == 27) or  # Estacionamiento 15
+                    (x == 18 and y == 30) or  # Estacionamiento 16
+                    (x == 16 and y == 33) or  # Estacionamiento 14
+                    (x == 25 and y == 15) or  # Estacionamiento 2
+                    (x == 26 and y == 18) or  # Estacionamiento 5
+                    (x == 26 and y == 26) or  # Estacionamiento 3
+                    (x == 24 and y == 30) or  # Estacionamiento 1
+                    (x == 26 and y == 33) or  # Estacionamiento 4
+                    (x == 32 and y == 14) or  # Estacionamiento 10
+                    (x == 31 and y == 19) or  # Estacionamiento 8
+                    (x == 31 and y == 24) or  # Estacionamiento 7
+                    (x == 33 and y == 28) or  # Estacionamiento 11
+                    (x == 30 and y == 31) or  # Estacionamiento 6
+                    (x == 32 and y == 33)):  # Estacionamiento 9
                     calle.isEstacionamiento = True
                     self.estacionamientos_cells.append(self.grid[(x, y)])
 
@@ -265,8 +281,8 @@ class TrafficModel(mesa.Model):
 # --- LÓGICA WEBSOCKET ---
 
 connected_clients = set()
-width = 24
-height = 24
+width = 48
+height = 48
 model = TrafficModel(50)
 
 def serialize_agents():
