@@ -1,12 +1,25 @@
 # type: ignore
+import numpy as np
+
+import pandas as pd
+
+import seaborn as sns
+
 import mesa
+
 from mesa.discrete_space import CellAgent, OrthogonalVonNeumannGrid
+
+import random
+
+import time
+
+from matplotlib.colors import ListedColormap
+
 from collections import deque
-import asyncio
-import websockets
-import json
+
 import diccionario_movimientos
 
+#type: ignore
 #Funcion "breadth_first_search" que llamaremos para calcular la ruta que debe tomar el agente "Carro" para llegar de un punto a otro
 # Esta misma funcion se llamara nuevamente en caso de que el agente Carro encuentre un obstaculo.
 
@@ -28,7 +41,7 @@ def breadth_first_search(start: tuple, goal: tuple, grid: OrthogonalVonNeumannGr
             path.append(start)
             path.pop(-1)
             return path[::-1]
-
+        
         cell = grid[current].coordinate
         neighbors = diccionario_movimientos.movimientos_posibles[cell[0] + 1][cell[1] + 1]
 
@@ -38,10 +51,15 @@ def breadth_first_search(start: tuple, goal: tuple, grid: OrthogonalVonNeumannGr
                 neighbor_cell = grid[cell_pos]
                 has_car = any(isinstance(agent, Carro) for agent in neighbor_cell.agents)
                 is_park = any(isinstance(agent, AgenteCalle) and agent.isEstacionamiento for agent in neighbor_cell.agents)
-                if not has_car or is_park:
+                if not has_car:
                     visited.add(cell_pos)
                     parent[cell_pos] = current
                     queue.append(cell_pos)
+                elif has_car:
+                    if is_park:
+                        visited.add(cell_pos)
+                        parent[cell_pos] = current
+                        queue.append(cell_pos)
     return []
 
 # Clase "AgenteCalle" que tenga valores de dirección asociados, para marcar la circulación.
@@ -59,7 +77,7 @@ class AgenteCalle(CellAgent):
 # Agente "Semaforo"
 
 class Semaforo1(CellAgent):
-    def __init__(self, model, cell):
+    def __init__(self, model, cell):     
         super().__init__(model)
         self.cell = cell
         self.avanza = False
@@ -75,7 +93,7 @@ class Semaforo1(CellAgent):
             self.contador = 0
 
 class Semaforo2(CellAgent):
-    def __init__(self, model, cell):
+    def __init__(self, model, cell):     
         super().__init__(model)
         self.cell = cell
         self.avanza = True
@@ -89,6 +107,8 @@ class Semaforo2(CellAgent):
         if self.contador >= 5:
             self.cambair_estado()
             self.contador = 0
+
+# Agente "Camion"
 
 # Agente "Carro"
 
@@ -112,7 +132,7 @@ class Carro(CellAgent):
         estado_estacionamiento = None
         for agente in siguiente_celda.agents:
             if isinstance(agente, AgenteCalle):
-                estado_estacionamiento = agente
+                estado_estacionamiento = agente 
             if isinstance(agente, Carro) and not estado_estacionamiento.isEstacionamiento:
                 return False
             if isinstance(agente, (Semaforo1, Semaforo2)):
@@ -135,12 +155,12 @@ class Carro(CellAgent):
         siguiente_pos = self.ruta[0]
         siguiente_celda = self.model.grid[siguiente_pos]
         return siguiente_celda
-
+    
     def cambiar_carril(self):
         x = self.puede_cambiar()
         if x:
             self.ruta = x
-
+    
     def puede_cambiar(self):
         siguiente_celda = self.obtener_siguiente()
         if not siguiente_celda:
@@ -179,19 +199,20 @@ class TrafficModel(mesa.Model):
     def __init__(self, n):
         super().__init__()
         self.num_cars = n
-        self.grid = OrthogonalVonNeumannGrid((24, 24), torus = False, capacity = 100, random = self.random)
+        self.grid = OrthogonalVonNeumannGrid((24, 24), torus = False, capacity = 500, random = self.random)
         self.estacionamientos_cells = []
 
         for x in range(width):
             for y in range(height):
                 cell = self.grid[(x, y)]
                 calle = AgenteCalle(self, cell)
-
+                
                 #Set Semaforos1
                 if (x == 21 and (y == 4 or y == 5 or y == 10 or y == 11) or
                     x == 2 and (y == 4 or y == 5 or y == 8 or y == 9) or
                     x == 7 and (y == 22 or y == 23) or
-                    x == 15 and (y == 22 or y == 23)):
+                    x == 15 and (y == 22 or y == 23) or
+                    x == 12 and (y == 0 or y == 1)):
                     semaforo1 = Semaforo1(self, cell)
 
                 #Set Semaforos2
@@ -202,7 +223,7 @@ class TrafficModel(mesa.Model):
                     y == 12 and (x == 22 or x == 23) or
                     y == 21 and (x == 8 or x == 9 or x == 16 or x == 17)):
                     semaforo2 = Semaforo2(self, cell)
-
+        
                 #Set Buildings
                 if ((1 < x < 4) and (1 < y < 4) or
                     (1 < x < 4) and (5 < y < 8) or
@@ -218,7 +239,7 @@ class TrafficModel(mesa.Model):
                     (17 < x < 22) and (11 < y < 22) or
                     (8 < x < 11) and (8 < y < 11)):
                     calle.isBuilding = True
-
+                
                 #Set Estacionamiento
                 if ((x == 3 and y == 3) or  # Estacionamiento 13
                     (x == 7 and y == 6) or  # Estacionamiento 17
@@ -239,7 +260,7 @@ class TrafficModel(mesa.Model):
                     (x == 20 and y == 21)):  # Estacionamiento 9
                     calle.isEstacionamiento = True
                     self.estacionamientos_cells.append(self.grid[(x, y)])
-
+    
         agents = Carro.create_agents(
             self,
             self.num_cars,
@@ -255,7 +276,7 @@ class TrafficModel(mesa.Model):
 connected_clients = set()
 width = 24
 height = 24
-model = TrafficModel(500)
+model = TrafficModel(50)
 
 def serialize_agents():
     """Serializa todos los agentes del modelo para enviar a Unity"""
