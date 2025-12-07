@@ -65,7 +65,7 @@ def breadth_first_search(start: tuple, goal: tuple, grid: OrthogonalVonNeumannGr
                 neighbor_cell = grid[cell_pos]
                 has_truck = any(isinstance(agent, Camion) for agent in neighbor_cell.agents)
                 has_car = any(isinstance(agent, Carro) for agent in neighbor_cell.agents)
-                is_park = any(isinstance(agent, AgenteCalle) and agent.isEstacionamiento for agent in neighbor_cell.agents)
+                is_park = any(isinstance(agent, AgenteEstacionamiento) and agent.disponible for agent in neighbor_cell.agents)
                 if is_park or (not has_car and not has_truck):
                     visited.add(cell_pos)
                     parent[cell_pos] = current
@@ -79,10 +79,31 @@ class AgenteCalle(CellAgent):
         super().__init__(model)
         self.cell = cell
         self.isBuilding = False
-        self.isEstacionamiento = False
 
     def step(self):
         pass
+
+# Agente "Estacionamiento"
+class AgenteEstacionamiento(CellAgent):
+    def __init__(self, model, cell):
+        super().__init__(model)
+        self.cell = cell
+        self.capacidad = 50
+        self.contador = 0
+        self.disponible = True
+    
+    def coche_entro(self):
+        if self.contador < self.capacidad:
+            self.contador += 1
+            if self.contador >= self.capacidad:
+                self.disponible = False
+    
+    def step(self):
+        for agente in self.cell.agents:
+            if isinstance(agente, Carro):
+                if agente.estacionado and not agente.contado:
+                    self.coche_entro()
+                    agente.contado = True
 
 # Agente "Semaforo"
 
@@ -153,15 +174,18 @@ class Camion(CellAgent):
             return False
         estado_estacionamiento = None
         for agente in siguiente_celda.agents:
-            if isinstance(agente, AgenteCalle):
-                estado_estacionamiento = agente 
-            if isinstance(agente, Carro) and not estado_estacionamiento.isEstacionamiento:
+            if isinstance(agente, AgenteEstacionamiento):
+                estado_estacionamiento = agente
+            if isinstance(agente, Carro) and not estado_estacionamiento:
                 return False
-            if isinstance(agente,Camion) and not estado_estacionamiento.isEstacionamiento:
+            if isinstance(agente,Camion) and not estado_estacionamiento:
                 return False
             if isinstance(agente, (Semaforo1, Semaforo2)):
                 if not agente.avanza:
                     return False
+        if estado_estacionamiento:
+            if not estado_estacionamiento.disponible:
+                return False
         return True
     
     def avanzar(self):
@@ -236,6 +260,7 @@ class Carro(CellAgent):
         while self.destino == self.cell.coordinate:
             self.destino = model.random.choice(model.estacionamientos_cells).coordinate
         self.estacionado = False
+        self.contado = False
         self.ruta = []
 
     def calcular_ruta(self):
@@ -247,15 +272,18 @@ class Carro(CellAgent):
             return False
         estado_estacionamiento = None
         for agente in siguiente_celda.agents:
-            if isinstance(agente, AgenteCalle):
-                estado_estacionamiento = agente 
-            if isinstance(agente, Carro) and not estado_estacionamiento.isEstacionamiento:
+            if isinstance(agente, AgenteEstacionamiento):
+                estado_estacionamiento = agente
+            if isinstance(agente, Carro) and not estado_estacionamiento:
                 return False
-            if isinstance(agente,Camion) and not estado_estacionamiento.isEstacionamiento:
+            if isinstance(agente,Camion) and not estado_estacionamiento:
                 return False
             if isinstance(agente, (Semaforo1, Semaforo2)):
                 if not agente.avanza:
                     return False
+        if estado_estacionamiento:
+            if not estado_estacionamiento.disponible:
+                return False
         return True
 
     def avanzar(self):
@@ -289,13 +317,22 @@ class Carro(CellAgent):
         return breadth_first_search(self.cell.coordinate, self.destino, self.model.grid)
 
     def llego_destino(self):
-        return self.cell.coordinate == self.destino
+        if self.cell.coordinate == self.destino:
+            return True
+        siguiente_celda = self.obtener_siguiente()
+        if siguiente_celda and siguiente_celda.coordinate == self.destino:
+            return True
+        return False
 
     def estacionarse(self):
         if not self.estacionado:
+            if self.cell.coordinate != self.destino:
+                siguiente_celda = self.obtener_siguiente()
+                if siguiente_celda and siguiente_celda.coordinate == self.destino:
+                    self.cell = siguiente_celda
+                    if self.ruta:
+                        self.ruta.pop(0)
             self.estacionado = True
-        else:
-            pass
 
     def step(self):
         if not self.ruta:
@@ -305,12 +342,12 @@ class Carro(CellAgent):
                 while self.destino == self.cell.coordinate:
                     self.destino = self.model.random.choice(self.model.estacionamientos_cells).coordinate
         if not self.estacionado:
-            if self.puede_avanzar():
+            if self.llego_destino():
+                self.estacionarse()
+            elif self.puede_avanzar():
                 self.avanzar()
             else:
                 self.cambiar_carril()
-        if self.llego_destino():
-            self.estacionarse()
         if self.estacionado:
             pass
 
@@ -399,9 +436,8 @@ class TrafficModel(mesa.Model):
                     (x == 36 and y == 38) or  
                     (x == 44 and y == 18) or  
                     (x == 35 and y == 2)):  
-                    
-                    calle.isEstacionamiento = True
-                    self.estacionamientos_cells.append(self.grid[(x, y)])
+                    estacionamiento = AgenteEstacionamiento(self, cell)
+                    self.estacionamientos_cells.append(cell)
 
         agents = Carro.create_agents(
             self,
@@ -424,15 +460,12 @@ if __name__ == "__main__":
     
     width = 48
     height = 48
-    model = TrafficModel(50)
+    model = TrafficModel(100)
     
     carros = [agent for agent in model.agents if isinstance(agent, Carro)]
     camiones = [agent for agent in model.agents if isinstance(agent, Camion)]
     
     print(f"Total cars: {len(carros)}")
-    for i, carro in enumerate(carros):
-        print(f"Car {i+1} - Starting position: {carro.cell.coordinate}, Destination: {carro.destino}")
-    
     plt.ion()
     
     fig, ax = plt.subplots(figsize=(12, 12))
@@ -447,9 +480,12 @@ if __name__ == "__main__":
             if calle_agents and calle_agents[0].isBuilding:
                 x, y = cell.coordinate
                 grid_state[y, x] = 4  # Buildings
-            if calle_agents and calle_agents[0].isEstacionamiento:
+
+        for cell in model.grid.all_cells:
+            estacionamiento_agent = [agent for agent in cell.agents if isinstance(agent, AgenteEstacionamiento)]
+            if estacionamiento_agent:
                 x, y = cell.coordinate
-                grid_state[y, x] = 8 # Estacionamientos
+                grid_state[y, x] = 8  # Estacionamientos
         
         #Marcar Semaforos
         for cell in model.grid.all_cells:
@@ -510,10 +546,37 @@ if __name__ == "__main__":
         ax.set_title(f'Traffic Simulation - Step {step_counter}\nActive Cars: {active_cars}/{len(carros)}', fontsize=14)
         ax.set_xlabel('X', fontsize=12)
         ax.set_ylabel('Y', fontsize=12)
+
+        estacionamientos = [agent for cell in model.grid.all_cells for agent in cell.agents if isinstance(agent, AgenteEstacionamiento)]
         
         if step_counter % 10 == 0:
-            print(f"Step {step_counter}: {active_cars} cars still moving")
-        
+            print(f"Numero de coches en cada estacionamiento:\n"
+                  f"Estacionamiento 1: {estacionamientos[0].contador} coches,\n"
+                  f"Estacionamiento 2: {estacionamientos[1].contador} coches,\n"
+                  f"Estacionamiento 3: {estacionamientos[2].contador} coches,\n"
+                  f"Estacionamiento 4: {estacionamientos[3].contador} coches,\n"
+                  f"Estacionamiento 5: {estacionamientos[4].contador} coches,\n"
+                  f"Estacionamiento 6: {estacionamientos[5].contador} coches,\n"
+                  f"Estacionamiento 7: {estacionamientos[6].contador} coches,\n"
+                  f"Estacionamiento 8: {estacionamientos[7].contador} coches,\n"
+                  f"Estacionamiento 9: {estacionamientos[8].contador} coches,\n"
+                  f"Estacionamiento 10: {estacionamientos[9].contador} coches,\n"
+                  f"Estacionamiento 11: {estacionamientos[10].contador} coches,\n"
+                  f"Estacionamiento 12: {estacionamientos[11].contador} coches,\n"
+                  f"Estacionamiento 13: {estacionamientos[12].contador} coches,\n"
+                  f"Estacionamiento 14: {estacionamientos[13].contador} coches,\n"
+                  f"Estacionamiento 15: {estacionamientos[14].contador} coches,\n"
+                  f"Estacionamiento 16: {estacionamientos[15].contador} coches,\n"
+                  f"Estacionamiento 17: {estacionamientos[16].contador} coches,\n"
+                  f"Estacionamiento 18: {estacionamientos[17].contador} coches,\n"
+                  f"Estacionamiento 19: {estacionamientos[18].contador} coches,\n"
+                  f"Estacionamiento 20: {estacionamientos[19].contador} coches,\n"
+                  f"Estacionamiento 21: {estacionamientos[20].contador} coches,\n"
+                  f"Estacionamiento 22: {estacionamientos[21].contador} coches,\n"
+                  f"Estacionamiento 23: {estacionamientos[22].contador} coches,\n"
+                  f"Estacionamiento 24: {estacionamientos[23].contador} coches,\n"
+                  f"Estacionamiento 25: {estacionamientos[24].contador} coches,\n"
+                  f"Estacionamiento 26: {estacionamientos[25].contador} coches.")
         fig.canvas.draw()
         fig.canvas.flush_events()
         
